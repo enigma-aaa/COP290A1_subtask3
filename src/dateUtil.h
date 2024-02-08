@@ -35,6 +35,17 @@ PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chr
     } */ 
     return std::move(table);  
 }
+/* a-b */
+int difference(chrono::year_month_day a,chrono::year_month_day b){
+    chrono::time_point aTimePoint = chrono::sys_days{a};
+    chrono::time_point bTimePoint = chrono::sys_days{b};
+    time_t aTime = chrono::system_clock::to_time_t(aTimePoint);
+    time_t bTime = chrono::system_clock::to_time_t(bTimePoint);
+    time_t diff = a_Time - b_Time;
+    time_t oneDay = 60*60*24;
+    int noDays = diff/oneDay;
+    return noDays;
+}
 
 chrono::year_month_day subtractDate(chrono::year_month_day date,int n){
     chrono::time_point time = chrono::sys_days{date};

@@ -34,7 +34,7 @@ public:
         modStartDate = subtractDate(startDate, 2 * n);
     }
 
-    void Buy(chrono :: year_month_day date)
+    void buy(chrono :: year_month_day date)
     {
         noShares++ ;
         curBal = curBal - curPrice ;
@@ -58,7 +58,7 @@ public:
             //buy
             if(noShares<x)
             {
-                Buy(table.rows[curLoc].date) ;
+                buy(table.rows[curLoc].date) ;
             }
         }
         else if(curPrice < curMean-p*sd)
