@@ -6,12 +6,12 @@
 using namespace std;
 class OrderStatsRow{
     public :
-        chrono :: year_month_day Date ;
-        string OrderDirection ;
-        int Quantity ;
-        double Price ;
+        chrono :: year_month_day date ;
+        string orderDirection ;
+        int quantity ;
+        double price ;
 
-    OrderStatsRow(chrono::year_month_day date , string OrderDirection , int quantity , double price);
+    OrderStatsRow(chrono::year_month_day date , string orderDirection , int quantity , double price);
     string getString();
 };
 
@@ -24,8 +24,8 @@ class OrderStats {
 };
 class CashFlowRows {
     public :
-        chrono::year_month_day Date ;
-        double Cashflow;
+        chrono::year_month_day date ;
+        double cashflow;
     CashFlowRows(chrono::year_month_day date , double price);
     string getString();
 };
@@ -40,9 +40,15 @@ class CashFlow {
 };
 
 class PriceTableRow{
-    public :
-        double price ;
-        string date ;
+    public:
+        chrono::year_month_day date;
+        double open;
+        double high;
+        double low;
+        double prevClose;
+        double close;
+        double VWAP;
+        double noTrades;
     static PriceTableRow getRowObj(string row);
 };
 
