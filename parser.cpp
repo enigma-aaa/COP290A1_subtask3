@@ -123,11 +123,10 @@ class CashFlow {
 class PriceTableRow{
     public :
     double price ;
-    string date ;
+    chrono::year_month_date Date ;
 
-    static PriceTableRow getRowObj(string row)
+    PriceTableRow (string &row)
     {
-        PriceTableRow temp ;
         stringstream s(row) ;
         string word ;
         vector<string> a ;
@@ -135,8 +134,8 @@ class PriceTableRow{
         {
             a.push_back(word) ;
         }
-        temp.date = a[1] ;
-        temp.price = double(stod(a[0])) ;
+        Date = str2Date(a[0]) ;
+        price = double(stod(a[0])) ;
         return temp ;
     }
 } ;
