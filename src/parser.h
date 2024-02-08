@@ -39,7 +39,7 @@ class CashFlow {
         string Header = "Date,Cashflow\n" ;
 
     void writeToCsv(string filename);
-    void addRow(chrono::year_month_day date , double price);
+    void addRow(chrono::year_month_day date , double cashflow);
 };
 
 class PriceTableRow{

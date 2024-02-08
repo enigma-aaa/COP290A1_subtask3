@@ -96,7 +96,7 @@ void CashFlow::writeToCsv(string filename)
     }    
     csv_file.close() ;
 }
-void CashFlow::addRow(chrono::year_month_day date , double price)
+void CashFlow::addRow(chrono::year_month_day date , double cashflow)
 {
     CashFlowRows a = CashFlowRows(date,price) ;
     rows.push_back(a) ;
