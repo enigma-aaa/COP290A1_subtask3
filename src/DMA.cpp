@@ -76,6 +76,7 @@ public:
 
     void squareOff()
     {
+        
         if(noShares > 0)
         {
             curBal  = curBal + noShares * table.rows[table.rows.size()-1].close ; 
