@@ -15,24 +15,32 @@ chrono::year_month_day str2DateYMD(string& date){
     return chrono::year_month_day(chrono::year(year),chrono::month(month),chrono::day(day)); 
 }
 
+string date2StrYMD(chrono::year_month_day date){
+    string result = "";
+    result += to_string(int(date.year())) + "/";
+    result += to_string(unsigned(date.month())) + "/";
+    result += to_string(unsigned(date.day()));
+    return result;
+}
+
 
 OrderStatsRow::OrderStatsRow(chrono::year_month_day date , string OrderDirection , int quantity , double price)
 :date(date),orderDirection(orderDirection),quantity(quantity),price(price)
 {}
-OrderStatsRow::getString()
+string OrderStatsRow::getString()
 {
     string temp = ""; 
-    temp+= to_string(unsigned(date.day));
+    temp+= to_string(unsigned(date.day()));
     temp+= '/' ;
-    temp+= to_string(unsigned(date.month)) ;
+    temp+= to_string(unsigned(date.month())) ;
     temp+= '/' ;
-    temp+= to_string(int(date.year)) ;
+    temp+= to_string(int(date.year())) ;
     temp+=',' ;
-    temp+=OrderDirection ;
+    temp+=orderDirection ;
     temp+=',' ;
-    temp+=to_string(Quantity) ;
+    temp+=to_string(quantity) ;
     temp+=',' ;
-    temp+=to_string(Price);
+    temp+=to_string(price);
     temp+='\n' ;
     return temp ;
 }  
@@ -50,7 +58,7 @@ void OrderStats::writeToCsv(string filename)
     }
     csv_file.close() ;
 }
-void OrderStats::addRow(chrono::year_month_date date , string orderDirection , int quantity , double price)
+void OrderStats::addRow(chrono::year_month_day date , string orderDirection , int quantity , double price)
 {
     OrderStatsRow a = OrderStatsRow(date , orderDirection , quantity , price) ;
     rows.push_back(a) ;
@@ -63,13 +71,13 @@ CashFlowRows::CashFlowRows(chrono::year_month_day date , double price)
 string CashFlowRows::getString()
 {
     string temp = ""; 
-    temp+= to_string(unsigned(Date.day));
+    temp+= to_string(unsigned(date.day()));
     temp+= '/' ;
-    temp+= to_string(unsigned(Date.month)) ;
+    temp+= to_string(unsigned(date.month())) ;
     temp+= '/' ;
-    temp+= to_string(int(Date.year)) ;
+    temp+= to_string(int(date.year())) ;
     temp+=',' ;
-    temp+=to_string(Cashflow) ;
+    temp+=to_string(cashflow) ;
     temp+='\n' ;
     return temp ;
 }
@@ -94,7 +102,7 @@ void CashFlow::addRow(chrono::year_month_day date , double price)
     rows.push_back(a) ;
 }
 
-static PriceTableRow PriceTableRow::getRowObj(string row)
+PriceTableRow PriceTableRow::getRowObj(string row)
 {
     PriceTableRow temp ;
     stringstream s(row) ;
@@ -114,6 +122,19 @@ static PriceTableRow PriceTableRow::getRowObj(string row)
     temp.noTrades = std::stod(tokens[7]);
     return temp ;
 }
+string PriceTableRow::getString(){
+    string result = "";
+    result += date2StrYMD(date) + ",";
+    result += to_string(open) + ",";
+    result += to_string(high) + ",";
+    result += to_string(low) + ",";
+    result += to_string(prevClose) + ",";
+    result += to_string(close) + ",";
+    result += to_string(VWAP) + ",";
+    result += to_string(noTrades) + ",";
+    return result;
+}
+
 
 void PriceTable::read_csv(string filename)
 {
@@ -121,9 +142,19 @@ void PriceTable::read_csv(string filename)
     csv_file.open(filename) ;
 
     string line,word ;
+    //ignoring header
+    getline(csv_file,line);
     while(getline(csv_file,line))
     {
         PriceTableRow temp = PriceTableRow::getRowObj(line) ;
         rows.push_back(temp) ;
     }
 }
+
+PriceTable::PriceTable(PriceTable&& other):rows(std::move(other.rows)){
+    //cout << "called move constructor of price table" << endl;    
+}
+PriceTable::PriceTable(const PriceTable& other):rows(other.rows){
+    //cout << "called copy constructor" << endl;
+}
+PriceTable::PriceTable(){}

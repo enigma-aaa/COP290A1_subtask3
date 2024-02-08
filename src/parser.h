@@ -4,6 +4,9 @@
 #include <sstream>
 #include <chrono>
 using namespace std;
+
+chrono::year_month_day str2Date(string& date);
+
 class OrderStatsRow{
     public :
         chrono :: year_month_day date ;
@@ -20,7 +23,7 @@ class OrderStats {
         vector<OrderStatsRow> rows ; 
         string Header = "Date,Order_dir,Quantity,Price\n" ;
     void writeToCsv(string filename);
-    void addRow(chrono::year_month_date date , string orderDirection , int quantity , double price);
+    void addRow(chrono::year_month_day date , string orderDirection , int quantity , double price);
 };
 class CashFlowRows {
     public :
@@ -50,10 +53,14 @@ class PriceTableRow{
         double VWAP;
         double noTrades;
     static PriceTableRow getRowObj(string row);
+    string getString();
 };
 
 class PriceTable {
     public :
         vector<PriceTableRow> rows ;
+    PriceTable(PriceTable&& other);
+    PriceTable();
+    PriceTable(const PriceTable& other);
     void read_csv(string filename);
 } ;

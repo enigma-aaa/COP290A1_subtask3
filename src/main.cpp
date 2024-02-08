@@ -1,15 +1,46 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include "parser.h"
+#include <cstdlib>
 
 using namespace std;
 
-chrono::year_month_day str2Date(string& date){
-    int day = stoi(date.substr(0,2));
-    int month = stoi(date.substr(3,2));
-    int year = stoi(date.substr(6,4));
-    return chrono::year_month_day(chrono::year(year),chrono::month(month),chrono::day(day));
+#define CSV_FILE_PATH "./bin/stockCSV/"
+
+//path in terminal here same as from where the exe is run
+PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chrono::year_month_day endDate){
+    string command = "python3 ./src/stockData.py ";
+    command += symbolName + " ";
+    int startYear,startMonth,startDay;
+    startYear = int(startDate.year());
+    startMonth = unsigned(startDate.month());
+    startDay = unsigned(startDate.day());
+    
+    cout << "startYear:" << startYear << " " << "startMonth:" << startMonth << " startDay:" << startDay << endl;
+
+    int endYear,endMonth,endDay;
+    endYear = int(endDate.year());
+    endMonth = unsigned(endDate.month());
+    endDay = unsigned(endDate.day());
+    string filePath = CSV_FILE_PATH + symbolName + ".csv";
+    
+    cout << "endYear:" << endYear << " " << "endMonth:" << endMonth << " endDay:" << endDay << endl;
+    command += to_string(startYear) + " " + to_string(startMonth) + " " + to_string(startDay) + " ";
+    command += to_string(endYear) + " " + to_string(endMonth) + " " + to_string(endDay) + " ";
+    command += filePath + " ";
+
+    cout << "command is:" << command << endl;
+    system(command.c_str());
+
+    PriceTable table;
+    table.read_csv(filePath);
+    /*for(PriceTableRow& row:table.rows){
+        cout << row.getString() << endl;
+    } */ 
+    return std::move(table);  
 }
+
 
 void handleBASIC(int argc,char* argv[]){
     string symbol(argv[2]);
@@ -188,6 +219,7 @@ void handlePairs(int argc,char* argv[]){
         //cout << "Wrong number of arguments for pair" << endl;
     }
 }
+/*
 int main(int argc,char* argv[]){
     string startegyName(argv[1]);
     if(startegyName == "BASIC"){
@@ -219,4 +251,13 @@ int main(int argc,char* argv[]){
     }else{
         //cout << "Invalid strategy" << endl;
     }
+}
+*/
+int main(){
+    string symbolName = "TATASTEEL";
+    string startDateStr = "01-02-2024";
+    string endDateStr = "06-02-2024";
+    chrono::year_month_day startDate = str2Date(startDateStr);
+    chrono::year_month_day endDate = str2Date(endDateStr);
+    PriceTable table = getPriceTable(symbolName,startDate,endDate);
 }
