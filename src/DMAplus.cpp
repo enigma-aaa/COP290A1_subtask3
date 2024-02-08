@@ -25,6 +25,7 @@ public:
     OrderStats stats;
 
     double curPrice;
+    chrono::year_month_day curDate;
     double curAbsoluteSum;
     double priceChange_n;
     double smoothingFactor;
@@ -46,31 +47,31 @@ public:
         AMA = table.rows[first+n];
         
     }
-    void buy(chrono::year_month_day date)
+    void buy()
     {
         noShares++;
         curBal = curBal - curPrice;
         //forgot to add quantity column have to handle that
-        stats.addRow(date,"BUY",noShares,curPrice);
-        flow.addRow(date,curBal);
+        stats.addRow(curDate,"BUY",noShares,curPrice);
+        flow.addRow(curDate,curBal);
         if(!sellDates.empty()){
             //if have sold some stock as in shorted it but have not balanced it out then do this
             //sellDates.front();
             sellDates.pop();
         }else{
-            buyDates.push(date);
+            buyDates.push(curDate);
         }
     }
-    void sell(chrono::year_month_day date)
+    void sell()
     {
         noShares--;
         curBal = curBal + curPrice;
-        stats.addRow(date,"SELL",noShares,curPrice);
-        flow.addRow(date,curBal);
+        stats.addRow(curDate,"SELL",noShares,curPrice);
+        flow.addRow(curDate,curBal);
         if(!buyDates.empty()){
             buyDates.pop();
         }else{
-            sellDates.push(date);
+            sellDates.push(curDate);
         }
     }
     void handleMaxHold(chrono::year_month_day curDate){
@@ -125,6 +126,7 @@ public:
         //cross check starting index once
         for(int i=startDateLoc+1;i<table.rows.size();i++){
             priceChange_n = table.rows[i].close - table.rows[i-n].close;
+            curDate = table.rows[i].date;
             //definetly have to crosscheck these indices
             double oldAbsDiff = abs(table.rows[i-n]-table.rows[i]);
             double newAbsDiff = abs(table.rows[i+1]-table.rows[i]);
@@ -144,6 +146,7 @@ public:
         if(noShares > 0){
             curBal = curBal + noShares * table.rows.back().close;
             stats.addRow(table.rows.back().date,"SELL",noShares,table.rows.back().close);
+            flow.addRow(date,curBal);
             noShares = 0;
             //if correctly understood only have to clear this
             sellDates.clear();
@@ -151,6 +154,7 @@ public:
         if(noShares < 0){
             curBal = curBal + noShares * table.rows.back().close;
             stats.addRow(table.rows.back().date,"BUY",noShares,table.rows.back().close);
+            flow.addRow(date,curBal);
             noShares = 0;
             buyDates.clear();
         }

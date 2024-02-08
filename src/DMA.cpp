@@ -21,7 +21,7 @@ public:
     double curVar ;
     int noShares;
     double curBal;
-    double curPrice ;
+    //double curPrice ;
     int curLoc ;
     DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_month_day endDate, string symbolName)
     {
