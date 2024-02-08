@@ -1,5 +1,5 @@
 Compiler=g++
-Flags=-std=c++20 -c -Wall
+Flags=-std=c++20 -c
 BinFolder=./bin/
 SrcFolder=./src/
 
@@ -35,10 +35,14 @@ else
 	./main $(strategy) $(symbol1) $(symbol2) $(x) $(n) $(threshold) $(start_date) $(end_date) $(stop_loss_threshold)
 endif
 endif
-buildProg: main.o
-	$(Compiler) $(BinFolder)main.o -o main
+temp:buildProg
+	./main
+buildProg: main.o parser.o
+	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o -o main
 main.o: $(SrcFolder)main.cpp
 	$(Compiler) $(Flags) $(SrcFolder)main.cpp -o $(BinFolder)main.o
+parser.o: $(SrcFolder)parser.cpp
+	$(Compiler) $(Flags) $(SrcFolder)parser.cpp -o $(BinFolder)parser.o
 clearAll: clearObjs clearExe
 
 clearObjs:
