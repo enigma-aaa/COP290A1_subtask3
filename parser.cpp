@@ -21,21 +21,13 @@ class OrderStatsRow{
     int Quantity ;
     double Price ;
 
-    OrderStatsRow (string & line)
+    OrderStatsRow(chrono::year_month_day date , string OrderDirection , int quantity , double price)
     {
-        string word ;
-        vector<string> a ;
-        stringstream s(line) ;
-        while(getline(s,word,','))
-        {
-            a.push_back(word) ;
-        }
-        Date = str2Date(a[0]) ;
-        OrderDirection = a[1] ;
-        Quantity = stoi(a[2]) ;
-        Price = stod(a[3]) ;
+        Date = date ,
+        OrderDirection = OrderDirection ;
+        Quantity = quantity ;
+        Price = price ;
     }
-
     string getString()
     {
         string temp = ""; 
@@ -72,9 +64,9 @@ class OrderStats {
         }
         csv_file.close() ;
     }
-    void addRow(string& line)
-    {   
-        OrderStatsRow a = OrderStatsRow(line) ;
+    void addRow(chrono::year_month_date date , string orderDirection , int quantity , double price)
+    {
+        OrderStatsRow a = OrderStatsRow(date , orderDirection , quantity , price) ;
         rows.push_back(a) ;
     }
 };
@@ -83,17 +75,10 @@ class CashFlowRows {
     public :
     chrono::year_month_day Date ;
     double Cashflow;
-    CashFlowRows (string & line)
+    CashFlowRows(chrono::year_month_day date , double price)
     {
-        string word ;
-        vector<string> a ;
-        stringstream s(line) ;
-        while(getline(s,word,','))
-        {
-            a.push_back(word) ;
-        }
-        Date = str2Date(a[0]) ;
-        Cashflow = stod(a[1]) ;
+        Date = date ;
+        Cashflow = price ;
     }
     string getString()
     {
@@ -128,9 +113,9 @@ class CashFlow {
         }    
         csv_file.close() ;
     }
-    void addRow(string& line)
-    {   
-        CashFlowRows a = CashFlowRows(line) ;
+    void addRow(chrono::year_month_day date , double price)
+    {
+        CashFlowRows a = CashFlowRows(date,price) ;
         rows.push_back(a) ;
     }
 };
@@ -178,48 +163,5 @@ class PriceTable {
 
 int main()
 {
-    ifstream csv_file;
-    string filename = "daily_pnl.csv";
-    csv_file.open(filename);
-    string line;
-    string temp;
-    string word;
-    TableData CurrentTable;
-    TableRow currentRow;
-    while (getline(csv_file, line))
-    {
-        int i = 0;
-        stringstream s(line);
-        while (getline(s, word, ','))
-        {
-            switch (i)
-            {
-            case 0:
-                currentRow.Date = word;
-                i++;
-                break;
-            case 1:
-                currentRow.Cashflow = word;
-                i++;
-                break;
-            default:
-                break;
-            }
-        }
-        CurrentTable.Data.push_back(currentRow);
-    }
-
-    for (auto x : CurrentTable.Data)
-    {
-        cout << x.Date << " arpit " << x.Date << endl;
-    }
-    csv_file.close();
-
-    filename = "newfile1.csv";
-    TableData b;
-    TableRow c;
-    c.Cashflow = "3" ;
-    c.Date = "04/01/2023" ;
-    addToTableData(c , b ) ;
-    writeToCsv(filename , b) ;
+    
 }
