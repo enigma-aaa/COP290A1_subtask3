@@ -1,6 +1,7 @@
 #include "dateUtil.h"
 #include <chrono>
 #include <sstream>
+#include <iomanip>
 #include "parser.h"
 using namespace std;
 
@@ -74,21 +75,21 @@ class Basic{
         curBal = curBal + noShares*curPrice;
         noShares = 0;
     }
-    void writeCashFlow(chrono::year_month_day curDate){
-        flow.addRow(curDate,curBal);
+    void writeCashFlow(chrono::year_month_day date){
+        flow.addRow(date,curBal);
     }
     void writeCSVfiles(){
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string csv_cashflow = baseFilePath + "cashflow.csv";
         string csv_order_stats = baseFilePath + "order_stats.csv";
-        cashflow.writeToCsv(csv_cashflow);
+        flow.writeToCsv(csv_cashflow);
         stats.writeToCsv(csv_order_stats);
     }
     void writeFinalPNL(){
         stringstream stream;
         stream << std::fixed << std::setprecision(2) << curBal;
         string curBalStr = stream.str();
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string pnlFileName = "finalPNL.txt";
         string pnlFilePath = baseFilePath + pnlFileName;
         ofstream pnlFile(pnlFilePath);
@@ -96,7 +97,7 @@ class Basic{
         pnlFile.close();
     }
     void main(string symbolName){
-        table = gectPriceTable(symbolName,modStartDate,endDate);
+        table = getPriceTable(symbolName,modStartDate,endDate);
         int tableSize = table.rows.size();
         int startDateLoc = -1;
         for(int i=0;i<table.rows.size();i++){
@@ -113,11 +114,11 @@ class Basic{
         for(int i=startDate_n_Loc+1;i<table.rows.size();i++){
             double newPrice = table.rows[i].close;
             chrono::year_month_day curDate = table.rows[i].date;
-            nextPrice(newPrice,newDate);
-            writeCashFlow();
+            nextPrice(newPrice,curDate);
+            writeCashFlow(curDate);
         }
         writeCSVfiles();
-        squareOff(table.rows.back());
+        squareOff(table.rows.back().date);
         writeFinalPNL();
     }
-}
+};

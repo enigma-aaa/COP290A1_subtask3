@@ -96,9 +96,9 @@ void CashFlow::writeToCsv(string filename)
     }    
     csv_file.close() ;
 }
-void CashFlow::addRow(chrono::year_month_day date , double cashflow)
+void CashFlow::addRow(chrono::year_month_day date , double curBal)
 {
-    CashFlowRows a = CashFlowRows(date,price) ;
+    CashFlowRows a = CashFlowRows(date,curBal) ;
     rows.push_back(a) ;
 }
 
@@ -151,9 +151,11 @@ void PriceTable::read_csv(string filename)
     }
 }
 
+/*
 PriceTable::PriceTable(PriceTable&& other):rows(std::move(other.rows)){
     //cout << "called move constructor of price table" << endl;    
 }
+*/
 PriceTable::PriceTable(const PriceTable& other):rows(other.rows){
     //cout << "called copy constructor" << endl;
 }

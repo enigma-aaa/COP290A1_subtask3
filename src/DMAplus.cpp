@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "dateUtil.h"
 #include <queue>
+#include <iomanip>
 #include <cmath>
 class DMAPlus
 {
@@ -33,6 +34,7 @@ public:
     double ER;
     double curBal;
     int noShares;
+    
     DMAPlus(int n,int x,double p,int max_hold_days,double c1,double c2)
     :n(n),x(x),p(p),max_hold_days(max_hold_days),c1(c1),c2(c2){}
 
@@ -41,15 +43,14 @@ public:
         curAbsoluteSum = 0;
         curBal = 0;
         for(int i=first;i<n+first;i++){            
-            double curDiff = abs(table.rows[i] - table.rows[i+1]);
+            double curDiff = abs(table.rows[i].close - table.rows[i+1].close);
             curAbsoluteSum += curDiff;    
         }
         //priceChange_n = table.rows[first+n] - table.rows[first];
         //not needed here handeled in the loop
         smoothingFactor = 0.5;
-        AMA = table.rows[first+n];
+        AMA = table.rows[first+n].close;
         noShares = 0;
-        curLoc = first;
         //cannot call check here as check also updates the values involved probably 
         //not needed here either as difference between AMA and price is zero
         //check();
@@ -81,7 +82,7 @@ public:
             sellDates.push(curDate);
         }
     }
-    void handleMaxHold(chrono::year_month_day curDate){
+    void handleMaxHold(){
         if(!buyDates.empty()){
             chrono::year_month_day oldestBuy = buyDates.front();
             int dayDiff = difference(curDate,oldestBuy);
@@ -122,20 +123,20 @@ public:
         }
     }
     void writeCashFlow(){
-        flow.addRow(date,curBal);
+        flow.addRow(curDate,curBal);
     }
     void writeCSVfiles(){
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string csv_cashflow = baseFilePath + "cashflow.csv";
         string csv_order_stats = baseFilePath + "order_stats.csv";
-        cashflow.writeToCsv(csv_cashflow);
+        flow.writeToCsv(csv_cashflow);
         stats.writeToCsv(csv_order_stats);  
     }
     void writeFinalPNL(){
         stringstream stream;
         stream << std::fixed << std::setprecision(2) << curBal;
         string curBalStr = stream.str();
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string pnlFileName = "finalPNL.txt";
         string pnlFilePath = baseFilePath + pnlFileName;
         ofstream pnlFile(pnlFilePath);
@@ -161,8 +162,8 @@ public:
             priceChange_n = table.rows[i].close - table.rows[i-n].close;
             curDate = table.rows[i].date;
             //definetly have to crosscheck these indices
-            double oldAbsDiff = abs(table.rows[i-n]-table.rows[i-n+1]);
-            double newAbsDiff = abs(table.rows[i+1]-table.rows[i]);
+            double oldAbsDiff = abs(table.rows[i-n].close-table.rows[i-n+1].close);
+            double newAbsDiff = abs(table.rows[i+1].close-table.rows[i].close);
             curAbsoluteSum = curAbsoluteSum - oldAbsDiff + newAbsDiff;
             ER = priceChange_n/curAbsoluteSum;
             double factorNum = 2*ER/(1+c2) - 1;
@@ -183,12 +184,12 @@ public:
             curBal = curBal + noShares * table.rows.back().close;
             noShares = 0;
             //if correctly understood only have to clear this
-            sellDates.clear();
+            while(!sellDates.empty()){ sellDates.pop(); }
         }
         if(noShares < 0){
             curBal = curBal + noShares * table.rows.back().close;
             noShares = 0;
-            buyDates.clear();
+            while(!buyDates.empty()){ buyDates.pop(); }
         }
     }
-}
+};

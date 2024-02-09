@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -59,7 +60,6 @@ class PriceTableRow{
 class PriceTable {
     public :
         vector<PriceTableRow> rows ;
-    PriceTable(PriceTable&& other);
     PriceTable();
     PriceTable(const PriceTable& other);
     void read_csv(string filename);

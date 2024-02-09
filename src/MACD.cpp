@@ -1,7 +1,8 @@
 #include "parser.h"
 #include "dateUtil.h"
 #include <cmath>
-class MACD
+#include <iomanip>
+class MACDStrat
 {
     int x;
     int n1 = 12;
@@ -10,6 +11,7 @@ class MACD
     double alpha1 = 2.0/(n1+1);
     double alpha2 = 2.0/(n2+1);
     double alphaSig = 2.0/(nSig+1);
+    double MACD = 0;
     double shortEWM,longEWM;
     double signal;
 
@@ -24,7 +26,7 @@ class MACD
     chrono::year_month_day curDate;
     double curBal;
     int noShares;
-    MACD(int x):x(x){
+    MACDStrat(int x):x(x){
         noShares = 0;
         curBal = 0;
         modStartDate = subtractDate(startDate,2*n2);
@@ -33,13 +35,11 @@ class MACD
         noShares++;
         curBal = curBal - curPrice;
         stats.addRow(curDate,"BUY",noShares,curPrice);
-        flow.addRow(curDate,curBal);
     }
     void sell(){
         noShares--;
         curBal = curBal + curPrice;
         stats.addRow(curDate,"SELL",noShares,curPrice);
-        flow.addRow(curDate,curBal);
     }
     void check(){
         if(MACD > signal){
@@ -58,19 +58,17 @@ class MACD
             curBal = curBal + noShares * curPrice;
             stats.addRow(table.rows.back().date,"SELL",noShares,curPrice);
             noShares = 0;
-            flow.addRow(date,curBal);
         }
         if(noShares < 0){
             curBal = curBal + noShares * curPrice;
             stats.addRow(table.rows.back().date,"BUY",noShares,curPrice);
             noShares = 0;
-            flow.addRow(date,curBal);
         }
     }
     void first(int startDateLoc){
         int startDate_n1_Loc = startDateLoc - n1 + 1;
         int startDate_n2_Loc = startDateLoc - n2 + 1;
-        int startDate_nSign_Loc = startDateLoc - nSign + 1;
+        int startDate_nSign_Loc = startDateLoc - nSig + 1;
         /* confirm that intially has to zero*/
         longEWM = 0;
         shortEWM = 0;
@@ -88,21 +86,21 @@ class MACD
         check();
     }
     void writeCashFlow(chrono::year_month_day curDate){
-        flow.addRow(date,curBal);
+        flow.addRow(curDate,curBal);
     }
     void writeCSVfiles()
     {
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string csv_cashflow = baseFilePath + "cashflow.csv";
         string csv_order_stats = baseFilePath + "order_stats.csv";
-        cashflow.writeToCsv(csv_cashflow);
+        flow.writeToCsv(csv_cashflow);
         stats.writeToCsv(csv_order_stats);        
     }
     void writeFinalPNL(){
         stringstream stream;
         stream << std::fixed << std::setprecision(2) << curBal;
         string curBalStr = stream.str();
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string pnlFileName = "finalPNL.txt";
         string pnlFilePath = baseFilePath + pnlFileName;
         ofstream pnlFile(pnlFilePath);
@@ -112,6 +110,7 @@ class MACD
     void main(){
         table = getPriceTable(symbolName,modStartDate,endDate);
         curPrice = 0;
+        int startDateLoc = -1;
         for(int i=0;i<table.rows.size();i++){
             if(table.rows[i].date == startDate){
                 startDateLoc = i;

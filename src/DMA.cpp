@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "dateUtil.h"
+#include <iomanip>
 #include <cmath>
 class DMA
 {
@@ -42,7 +43,7 @@ public:
         stats.addRow(date,"SELL" ,noShares , curPrice) ;
     }
     void writeCashFlow(chrono::year_month_day curDate){
-        flow.addRow(date,curBal);
+        flow.addRow(curDate,curBal);
     }
     void check()
     {
@@ -79,17 +80,17 @@ public:
     }
     void writeCSVfiles()
     {
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string csv_cashflow = baseFilePath + "cashflow.csv";
         string csv_order_stats = baseFilePath + "order_stats.csv";
-        cashflow.writeToCsv(csv_cashflow);
+        flow.writeToCsv(csv_cashflow);
         stats.writeToCsv(csv_order_stats);        
     }
     void writeFinalPNL(){
         stringstream stream;
         stream << std::fixed << std::setprecision(2) << curBal;
         string curBalStr = stream.str();
-        string baseFilePath = "./bin/stockCSV/"
+        string baseFilePath = "./bin/stockCSV/";
         string pnlFileName = "finalPNL.txt";
         string pnlFilePath = baseFilePath + pnlFileName;
         ofstream pnlFile(pnlFilePath);
@@ -135,4 +136,4 @@ public:
         squareOff() ;
         writeFinalPNL();
     }
-}
+};

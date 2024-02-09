@@ -2,11 +2,10 @@
 #include <string>
 #include <chrono>
 #include "parser.h"
+#include "dateUtil.h"
 #include <cstdlib>
 
 using namespace std;
-
-#define CSV_FILE_PATH "./bin/stockCSV/"
 
 //path in terminal here same as from where the exe is run
 
