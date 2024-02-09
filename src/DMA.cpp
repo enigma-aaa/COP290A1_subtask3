@@ -23,14 +23,9 @@ public:
     double curBal;
     //double curPrice ;
     int curLoc ;
-    DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_month_day endDate, string symbolName)
+    DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_month_day endDate, string symbolName):
+    n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
     {
-        n = n;
-        x = x;
-        p = p;
-        startDate = startDate;
-        endDate = endDate;
-        symbolName = symbolName;
         modStartDate = subtractDate(startDate, 2 * n);
     }
 
@@ -39,20 +34,22 @@ public:
         noShares++ ;
         curBal = curBal - curPrice ;
         stats.addRow(date,"BUY",noShares,curPrice) ;
-        flow.addRow(date,curBal) ;
     }
     void sell(chrono :: year_month_day date)
     {
         noShares-- ;
         curBal = curBal + curPrice ;
         stats.addRow(date,"SELL" ,noShares , curPrice) ;
-        flow.addRow(date,curBal) ;
+    }
+    void writeCashFlow(chrono::year_month_day curDate){
+        flow.addRow(date,curBal);
     }
     void check()
     {
         double sd = sqrt(cursquaredSum/n - ((curSum * curSum)/(n*n))) ;
         double curMean = curSum/n ;
 
+        /*Both buy and sell may occur here because of greater than or equal to*/
         if(curPrice >= curMean + p*sd)
         {
             //buy
@@ -61,7 +58,7 @@ public:
                 buy(table.rows[curLoc].date) ;
             }
         }
-        else if(curPrice < curMean-p*sd)
+        else if(curPrice <= curMean-p*sd)
         {
             //sell
             if(noShares > -1*x )
@@ -70,22 +67,35 @@ public:
             }
             
         }
-        curSum = curSum -table.rows[curLoc-n].close + curPrice ;
-        cursquaredSum = cursquaredSum - (table.rows[curLoc-n].close)*(table.rows[curLoc-n].close) + curPrice * curPrice ;
+        /*Included -(n-1) instead of -n here becuase sir said we have to include current day and seemed to say total n days*/
+        curSum = curSum -table.rows[curLoc-n+1].close + curPrice ;
+        cursquaredSum = cursquaredSum - (table.rows[curLoc-n+1].close)*(table.rows[curLoc-n+1].close) + curPrice * curPrice ;
     }
 
     void squareOff()
     {
-        
-        if(noShares > 0)
-        {
-            curBal  = curBal + noShares * table.rows[table.rows.size()-1].close ; 
-            stats.addRow(table.rows.back().date , "SELL" , noShares , table.rows.back().close) ;
-            noShares = 0 ;
-        }
-    
+        curBal  = curBal + noShares * table.rows[table.rows.size()-1].close ; 
+        noShares = 0 ;
     }
-
+    void writeCSVfiles()
+    {
+        string baseFilePath = "./bin/stockCSV/"
+        string csv_cashflow = baseFilePath + "cashflow.csv";
+        string csv_order_stats = baseFilePath + "order_stats.csv";
+        cashflow.writeToCsv(csv_cashflow);
+        stats.writeToCsv(csv_order_stats);        
+    }
+    void writeFinalPNL(){
+        stringstream stream;
+        stream << std::fixed << std::setprecision(2) << curBal;
+        string curBalStr = stream.str();
+        string baseFilePath = "./bin/stockCSV/"
+        string pnlFileName = "finalPNL.txt";
+        string pnlFilePath = baseFilePath + pnlFileName;
+        ofstream pnlFile(pnlFilePath);
+        pnlFile << curBalStr;
+        pnlFile.close();
+    }
     void main()
     {
         table = getPriceTable(symbolName, modStartDate, endDate);
@@ -103,17 +113,15 @@ public:
         {
             cout << "start date not located in the table for some reason" << endl;
         }
-        int startDate_n_Loc = startDateLoc - n;
+        /*Have to ask sir since current day has to be included might have to do n-1 here*/
+        int startDate_n_Loc = startDateLoc - (n-1);
         curSum = 0 ;
+        cursquaredSum = 0;
         for(int i = startDate_n_Loc ; i<startDate_n_Loc+n ; i++)
         {
             curSum +=  table.rows[i].close ;
-        }
-        cursquaredSum = 0 ;
-        for(int i = startDate_n_Loc ; i<startDate_n_Loc+n ; i++)
-        {
-            cursquaredSum += table.rows[i].close * table.rows[i].close ;
-        }    
+            cursquaredSum += table.rows[i].close * table.rows[i].close;
+        }   
 
 
         for(int i = startDateLoc ; i<  table.rows.size()-1 ; i++)
@@ -121,7 +129,10 @@ public:
             curPrice = table.rows[i].close ;
             curLoc = startDateLoc ;
             check() ;
+            writeCashFlow(table.rows[i].date);
         }
+        writeCSVfiles();
         squareOff() ;
+        writeFinalPNL();
     }
 }

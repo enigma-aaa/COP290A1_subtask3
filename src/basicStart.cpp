@@ -1,5 +1,6 @@
 #include "dateUtil.h"
 #include <chrono>
+#include <sstream>
 #include "parser.h"
 using namespace std;
 
@@ -28,8 +29,8 @@ class Basic{
         date but price n days before the start date*/
     void firstPrice(double orgPrice){
         curPrice = orgPrice;
-        noIncDays = 1;
-        noDecDays = 1;
+        noIncDays = 0;
+        noDecDays = 0;
         curBal = 0;
         noShares = 0;
     }
@@ -38,7 +39,7 @@ class Basic{
         curPrice = newPrice;
         if(oldPrice < newPrice){
             noIncDays++;
-            noDecDays = 1;
+            noDecDays = 0;
             if(noIncDays == n){
                 if(noShares < x){  buy(newDate); }
                 noIncDays--;
@@ -46,15 +47,15 @@ class Basic{
         }
         if(newPrice < oldPrice){
             noDecDays++;
-            noIncDays = 1;
+            noIncDays = 0;
             if(noDecDays == n){
                 if(noShares > -x){sell(newDate);}
                 noDecDays--;
             }
         }
         if(newPrice == curPrice){
-            noIncDays = 1;
-            noDecDays = 1;            
+            noIncDays = 0;
+            noDecDays = 0;            
         }
     }    
     void buy(chrono::year_month_day date){  
@@ -62,23 +63,37 @@ class Basic{
         curBal = curBal - curPrice;
         //Assuming showing new quantity here
         stats.addRow(date,"BUY",noShares,curPrice);
-        flow.addRow(date,cashflow);
     }
     void sell(chrono::year_month_day date){
         noShares--;
         curBal = curBal + curPrice;
         stats.addRow(date,"SELL",noShares,curPrice);
-        flow.addRow(date,cashflow);
     }
     /*Ensure price set to closing price before calling*/
     void squareOff(chrono::year_month_day date){
         curBal = curBal + noShares*curPrice;
-        if(noShares > 0){
-            stats.addRow(date,"SELL",noShares,curPrice);
-        }
-        if(noShares < 0){
-            stats.addRow(date,"BUY",-noShares,curPrice);
-        }
+        noShares = 0;
+    }
+    void writeCashFlow(chrono::year_month_day curDate){
+        flow.addRow(curDate,curBal);
+    }
+    void writeCSVfiles(){
+        string baseFilePath = "./bin/stockCSV/"
+        string csv_cashflow = baseFilePath + "cashflow.csv";
+        string csv_order_stats = baseFilePath + "order_stats.csv";
+        cashflow.writeToCsv(csv_cashflow);
+        stats.writeToCsv(csv_order_stats);
+    }
+    void writeFinalPNL(){
+        stringstream stream;
+        stream << std::fixed << std::setprecision(2) << curBal;
+        string curBalStr = stream.str();
+        string baseFilePath = "./bin/stockCSV/"
+        string pnlFileName = "finalPNL.txt";
+        string pnlFilePath = baseFilePath + pnlFileName;
+        ofstream pnlFile(pnlFilePath);
+        pnlFile << curBalStr;
+        pnlFile.close();
     }
     void main(string symbolName){
         table = gectPriceTable(symbolName,modStartDate,endDate);
@@ -92,15 +107,17 @@ class Basic{
         if(startDateLoc == -1) { cout << "start date not located in the table for some reason" << endl;}
         
         int startDate_n_Loc = startDateLoc - n;
-        double firstprice = table.rows[i].close;
+        double firstprice = table.rows[startDate_n_Loc].close;
         firstPrice(firstprice);
 
         for(int i=startDate_n_Loc+1;i<table.rows.size();i++){
             double newPrice = table.rows[i].close;
             chrono::year_month_day curDate = table.rows[i].date;
             nextPrice(newPrice,newDate);
+            writeCashFlow();
         }
-
+        writeCSVfiles();
         squareOff(table.rows.back());
+        writeFinalPNL();
     }
 }
