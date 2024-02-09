@@ -18,6 +18,7 @@ class Basic{
         int noDecDays;
         int noShares;
         double curBal;
+        int curLoc;
 
     Basic(int n,int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName):
     n(n),x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
@@ -69,11 +70,18 @@ class Basic{
         stats.addRow(date,"SELL",noShares,curPrice);
         flow.addRow(date,cashflow);
     }
+    /*Ensure price set to closing price before calling*/
     void squareOff(chrono::year_month_day date){
-        curBal = curBal + noShares*closePrice;
+        curBal = curBal + noShares*curPrice;
+        if(noShares > 0){
+            stats.addRow(date,"SELL",noShares,curPrice);
+        }
+        if(noShares < 0){
+            stats.addRow(date,"BUY",-noShares,curPrice);
+        }
     }
     void main(string symbolName){
-        table = getPriceTable(symbolName,modStartDate,endDate);
+        table = gectPriceTable(symbolName,modStartDate,endDate);
         int tableSize = table.rows.size();
         int startDateLoc = -1;
         for(int i=0;i<table.rows.size();i++){
@@ -92,5 +100,7 @@ class Basic{
             chrono::year_month_day curDate = table.rows[i].date;
             nextPrice(newPrice,newDate);
         }
+
+        squareOff(table.rows.back());
     }
 }

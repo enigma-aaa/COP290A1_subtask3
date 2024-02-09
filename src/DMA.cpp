@@ -21,7 +21,7 @@ public:
     double curVar ;
     int noShares;
     double curBal;
-    double curPrice ;
+    //double curPrice ;
     int curLoc ;
     DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_month_day endDate, string symbolName)
     {
@@ -34,7 +34,7 @@ public:
         modStartDate = subtractDate(startDate, 2 * n);
     }
 
-    void Buy(chrono :: year_month_day date)
+    void buy(chrono :: year_month_day date)
     {
         noShares++ ;
         curBal = curBal - curPrice ;
@@ -58,7 +58,7 @@ public:
             //buy
             if(noShares<x)
             {
-                Buy(table.rows[curLoc].date) ;
+                buy(table.rows[curLoc].date) ;
             }
         }
         else if(curPrice < curMean-p*sd)
@@ -76,6 +76,7 @@ public:
 
     void squareOff()
     {
+        
         if(noShares > 0)
         {
             curBal  = curBal + noShares * table.rows[table.rows.size()-1].close ; 
