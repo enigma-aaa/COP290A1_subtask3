@@ -31,6 +31,7 @@ public:
     double smoothingFactor;
     double AMA;
     double ER;
+    double curBal;
     int noShares;
     DMAPlus(int n,int x,double p,int max_hold_days,double c1,double c2)
     :n(n),x(x),p(p),max_hold_days(max_hold_days),c1(c1),c2(c2){}
@@ -38,6 +39,7 @@ public:
     //first+n is the index of the start function
     void firstPrice(int first){
         curAbsoluteSum = 0;
+        curBal = 0;
         for(int i=first;i<n+first;i++){            
             double curDiff = abs(table.rows[i] - table.rows[i+1]);
             curAbsoluteSum += curDiff;    
@@ -47,7 +49,10 @@ public:
         smoothingFactor = 0.5;
         AMA = table.rows[first+n];
         noShares = 0;
-        check();
+        curLoc = first;
+        //cannot call check here as check also updates the values involved probably 
+        //not needed here either as difference between AMA and price is zero
+        //check();
     }
     void buy()
     {

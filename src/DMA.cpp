@@ -127,7 +127,7 @@ public:
         for(int i = startDateLoc ; i<  table.rows.size()-1 ; i++)
         {
             curPrice = table.rows[i].close ;
-            curLoc = startDateLoc ;
+            curLoc = i;
             check() ;
             writeCashFlow(table.rows[i].date);
         }
