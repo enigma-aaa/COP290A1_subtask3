@@ -3,6 +3,7 @@
 RSI::RSI(int n,int x,double oversold_threshold,double overbought_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
 :n(n),x(x),oversold_threshold(oversold_threshold),overbought_threshold(overbought_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
     modStartDate = subtractDate(startDate,2*n);
+    table = nullptr;
 }
 void RSI::buy()
 {
@@ -26,8 +27,8 @@ void RSI::firstPrice(int startDateLoc){
     curGainSum = 0;
     curLossSum = 0;
     for(int i=startDate_n_Loc;i<startDateLoc;i++){
-        double curGain = max(table.rows[i].close   - table.rows[i-1].close,0.0);
-        double curLoss = max(table.rows[i-1].close - table.rows[i].close  ,0.0);
+        double curGain = max(table->rows[i].close   - table->rows[i-1].close,0.0);
+        double curLoss = max(table->rows[i-1].close - table->rows[i].close  ,0.0);
         curGainSum += curGain;
         curLossSum += curLoss;
     }
@@ -68,26 +69,27 @@ void RSI::writeFinalPNL(){
 }
 void RSI::main()
 {
-    table = getPriceTable(symbolName,modStartDate,endDate);
-    int tableSize = table.rows.size();
+    PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
+    table = &createTable;
+    int tableSize = table->rows.size();
     int startDateLoc = -1;
-    for(int i=0;i<table.rows.size();i++){
-        if(table.rows[i].date == startDate){
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
             startDateLoc = i;
         }
     }
     if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
 
     firstPrice(startDateLoc);
-    for(int i=startDateLoc;i<table.rows.size();i++){
-        curDate = table.rows[i].date;
-        curPrice = table.rows[i].close;
+    for(int i=startDateLoc;i<table->rows.size();i++){
+        curDate = table->rows[i].date;
+        curPrice = table->rows[i].close;
         cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
-        double oldProfit = max(table.rows[i-n].close   - table.rows[i-n-1].close,0.0);
-        double curProfit = max(table.rows[i].close     - table.rows[i-1].close,0.0);
+        double oldProfit = max(table->rows[i-n].close   - table->rows[i-n-1].close,0.0);
+        double curProfit = max(table->rows[i].close     - table->rows[i-1].close,0.0);
 
-        double oldLoss   = max(table.rows[i-n-1].close - table.rows[i-n].close,0.0);
-        double curLoss   = max(table.rows[i-1].close   - table.rows[i].close,0.0);
+        double oldLoss   = max(table->rows[i-n-1].close - table->rows[i-n].close,0.0);
+        double curLoss   = max(table->rows[i-1].close   - table->rows[i].close,0.0);
         curGainSum = curGainSum - oldProfit + curProfit;
         curLossSum = curLossSum - oldLoss + curLoss;
         check();
@@ -101,4 +103,36 @@ void RSI::main()
 void RSI::squareOff(){
     curBal = curBal + noShares*curPrice;
     noShares = 0;
+}
+void RSI::multiMain(PriceTable* srcTable)
+{
+    table = srcTable;
+    int tableSize = table->rows.size();
+    int startDateLoc = -1;
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
+            startDateLoc = i;
+        }
+    }
+    if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
+
+    firstPrice(startDateLoc);
+    for(int i=startDateLoc;i<table->rows.size();i++){
+        curDate = table->rows[i].date;
+        curPrice = table->rows[i].close;
+        cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
+        double oldProfit = max(table->rows[i-n].close   - table->rows[i-n-1].close,0.0);
+        double curProfit = max(table->rows[i].close     - table->rows[i-1].close,0.0);
+
+        double oldLoss   = max(table->rows[i-n-1].close - table->rows[i-n].close,0.0);
+        double curLoss   = max(table->rows[i-1].close   - table->rows[i].close,0.0);
+        curGainSum = curGainSum - oldProfit + curProfit;
+        curLossSum = curLossSum - oldLoss + curLoss;
+        check();
+        cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
+        writeCashFlow();            
+    }        
+    //writeCSVfiles();
+    squareOff();
+    //writeFinalPNL();
 }

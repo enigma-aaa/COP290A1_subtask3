@@ -15,7 +15,7 @@ public:
 
     chrono::year_month_day curDate;
 
-    PriceTable table;
+    PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
@@ -33,5 +33,6 @@ public:
     void writeCSVfiles();
     void writeFinalPNL();
     void main();
+    void multiMain(PriceTable* srcTable);
     void squareOff();
 };

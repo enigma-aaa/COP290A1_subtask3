@@ -19,7 +19,7 @@ public:
     chrono::year_month_day startDate,endDate,modStartDate;    
     string symbolName;
 
-    PriceTable table;
+    PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
@@ -37,4 +37,5 @@ public:
     void writeCSVfiles();
     void writeFinalPNL();
     void main();
+    void multiMain(PriceTable* srcTable);
 };

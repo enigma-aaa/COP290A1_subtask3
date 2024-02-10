@@ -35,4 +35,5 @@ class Basic{
     void writeCSVfiles();
     void writeFinalPNL();
     void main();
+    void multiMain(PriceTable* srcTable);
 };

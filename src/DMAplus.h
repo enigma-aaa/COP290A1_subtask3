@@ -21,7 +21,7 @@ public:
     queue<chrono::year_month_day> sellDates;
     queue<chrono::year_month_day> buyDates;
 
-    PriceTable table;
+    PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
@@ -47,6 +47,7 @@ public:
     void writeCashFlow();
     void writeCSVfiles();
     void writeFinalPNL();
-    void main( );
+    void main();
+    void multiMain(PriceTable* table);
     void squareOff();
 };

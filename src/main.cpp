@@ -146,7 +146,7 @@ void handleADX(int argc,char* argv[]){
     strat.main();
 }
 void handleRegression(int argc,char* argv[]){
-    string symbol(argv[2]);
+    /*string symbol(argv[2]);
     //cout << "symbol is:" << symbol << endl;
     int x = stoi(argv[3]);
     //cout << "x is:" << x << endl;
@@ -171,6 +171,7 @@ void handleRegression(int argc,char* argv[]){
     
     LinearRegression strat(trainStart ,trainEnd , startDate , endDate , p , x , symbol) ;
     strat.main() ;
+    */
 }
 void handleBestOfAll(int argc,char* argv[]){
     string symbol(argv[2]);

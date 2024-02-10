@@ -36,7 +36,7 @@ else
 	./main $(strategy) $(symbol1) $(symbol2) $(x) $(n) $(threshold) $(start_date) $(end_date) $(stop_loss_threshold)
 endif
 endif
-buildProg: main.o parser.o ADX.o basicStart.o DMA.o DMAplus.o MACD.o RSI.o dateUtil.o
+buildProg: main.o parser.o ADX.o basicStart.o DMA.o DMAplus.o MACD.o RSI.o dateUtil.o LinearRegression.o
 	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o -o main
 main.o: $(SrcFolder)main.cpp
 	$(Compiler) $(Flags) $(SrcFolder)main.cpp -o $(BinFolder)main.o
@@ -57,6 +57,8 @@ RSI.o: $(SrcFolder)RSI.cpp
 	$(Compiler) $(Flags) $(SrcFolder)RSI.cpp -o $(BinFolder)RSI.o
 dateUtil.o: $(SrcFolder)dateUtil.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)dateUtil.cpp -o $(BinFolder)dateUtil.o
+LinearRegression.o: $(SrcFolder)LinearRegression.cpp 
+	$(Compiler) $(Flags) $(SrcFolder)LinearRegression.cpp -o $(BinFolder)LinearRegression.o
 clearObjs:
 	rm -rf $(BinFolder)*
 clearExe:
