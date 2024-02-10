@@ -3,6 +3,12 @@
 #include <chrono>
 #include "parser.h"
 #include "dateUtil.h"
+#include "ADX.h"
+#include "basicStart.h"
+#include "DMA.h"
+#include "DMAplus.h"
+#include "MACD.h"
+#include "RSI.h"
 #include <cstdlib>
 
 using namespace std;
@@ -12,7 +18,7 @@ using namespace std;
 
 
 void handleBASIC(int argc,char* argv[]){
-    string symbol(argv[2]);
+    string symbolName(argv[2]);
     int n = stoi(argv[3]);
     int x = stoi(argv[4]);
     string startDateStr(argv[5]);
@@ -20,6 +26,8 @@ void handleBASIC(int argc,char* argv[]){
     string endDateStr(argv[6]);
     chrono::year_month_day endDate = str2Date(endDateStr);
     
+    Basic strat(n,x,startDate,endDate,symbolName);
+    strat.main();
     //cout << "symbol is:" << symbol << endl;
     //cout << "n is:" << n << endl;
     //cout << "x is:" << x << endl;
@@ -30,7 +38,7 @@ void handleBASIC(int argc,char* argv[]){
     
 }
 void handleDMA(int argc,char* argv[]){
-    string symbol(argv[2]);
+    string symbolName(argv[2]);
     int n = stoi(argv[3]);
     int x = stoi(argv[4]);
     int p = stoi(argv[5]);
@@ -39,6 +47,8 @@ void handleDMA(int argc,char* argv[]){
     string endDateStr(argv[7]);
     chrono::year_month_day endDate = str2Date(endDateStr);
     
+    DMA strat(n,x,p,startDate,endDate,symbolName);
+    strat.main();
     //cout << "symbol is:" << symbol << endl;
     //cout << "n is:" << n << endl;
     //cout << "x is:" << x << endl;
@@ -72,6 +82,8 @@ void handleDMAplus(int argc,char* argv[]){
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     chrono::year_month_day endDate = str2Date(endDateStr);
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
+    DMAPlus strat(n,x,p,max_hold_days,c1,c2);
+    strat.main();
 }
 void handleMACD(int argc,char* argv[]){
     string symbol(argv[2]);
@@ -86,17 +98,19 @@ void handleMACD(int argc,char* argv[]){
     //cout << "endDate str is:" << endDateStr << endl;
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
+    MACDStrat strat(x);
+    strat.main();
 }
 void handleRSI(int argc,char* argv[]){
-    string symbol(argv[2]);
+    string symbolName(argv[2]);
     //cout << "symbol is:" << symbol << endl;
     int x = stoi(argv[3]);
     //cout << "x is:" << x << endl;
     int n = stoi(argv[4]);
     //cout << "n is:" << n << endl;
-    int oversold = stoi(argv[5]);
+    int oversold_threshold = stoi(argv[5]);
     //cout << "oversold is:" << oversold << endl;
-    int overbought = stoi(argv[6]);
+    int overbought_threshold = stoi(argv[6]);
     //cout << "overbought is:" << overbought << endl;
     string startDateStr(argv[7]);
     //cout << "startDate str is:" << startDateStr << endl;
@@ -106,6 +120,8 @@ void handleRSI(int argc,char* argv[]){
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     chrono::year_month_day endDate = str2Date(endDateStr);    
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
+    RSI strat(n,x,oversold_threshold,overbought_threshold,startDate,endDate,symbolName);
+    strat.main();
 }
 void handleADX(int argc,char* argv[]){
     string symbol(argv[2]);
@@ -124,6 +140,8 @@ void handleADX(int argc,char* argv[]){
     //cout << "endDate str is:" << endDateStr << endl;
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
+    ADXStrat strat(n,x,adx_threshold,startDate,endDate);
+    strat.main();
 }
 void handleRegression(int argc,char* argv[]){
     string symbol(argv[2]);
@@ -222,6 +240,7 @@ int main(int argc,char* argv[]){
     }
 }
 */
+
 int main(){
     string symbolName = "TATASTEEL";
     string startDateStr = "01-02-2024";
