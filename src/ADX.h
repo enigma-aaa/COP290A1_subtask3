@@ -12,7 +12,7 @@ public:
     chrono::year_month_day startDate,modStartDate,endDate;
     string symbolName;
 
-    PriceTable table;
+    PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
@@ -39,4 +39,5 @@ public:
     double max(double a,double b);
     double max(double a,double b,double c);
     void main();
+    void multiMain(PriceTable* srcTable);
 };
