@@ -10,7 +10,7 @@
 #include "MACD.h"
 #include "RSI.h"
 #include <cstdlib>
-
+#include "LinearRegNorm.h"
 using namespace std;
 
 //path in terminal here same as from where the exe is run
@@ -168,6 +168,9 @@ void handleRegression(int argc,char* argv[]){
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     chrono::year_month_day endDate = str2Date(endDateStr);
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;        
+    
+    LinearRegression strat(trainStart ,trainEnd , startDate , endDate , p , x , symbol) ;
+    strat.main() ;
 }
 void handleBestOfAll(int argc,char* argv[]){
     string symbol(argv[2]);
