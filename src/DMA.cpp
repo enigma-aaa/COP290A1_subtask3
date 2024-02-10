@@ -3,6 +3,7 @@ DMA::DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_
 n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
 {
     modStartDate = subtractDate(startDate, 2 * n);
+    noShares = 0 ;
 }
 
 void DMA::buy(chrono :: year_month_day date)
@@ -22,10 +23,14 @@ void DMA::writeCashFlow(chrono::year_month_day curDate){
 }
 void DMA::check()
 {
+    curSum = curSum -table.rows[curLoc-n].close + curPrice ;
+    
+    cursquaredSum = cursquaredSum - (table.rows[curLoc-n].close)*(table.rows[curLoc-n].close) + curPrice * curPrice ;
     double sd = sqrt(cursquaredSum/n - ((curSum * curSum)/(n*n))) ;
     double curMean = curSum/n ;
 
     /*Both buy and sell may occur here because of greater than or equal to*/
+
     if(curPrice >= curMean + p*sd)
     {
         //buy
@@ -44,8 +49,7 @@ void DMA::check()
         
     }
     /*Included -(n-1) instead of -n here becuase sir said we have to include current day and seemed to say total n days*/
-    curSum = curSum -table.rows[curLoc-n+1].close + curPrice ;
-    cursquaredSum = cursquaredSum - (table.rows[curLoc-n+1].close)*(table.rows[curLoc-n+1].close) + curPrice * curPrice ;
+
 }
 
 void DMA::squareOff()
@@ -90,7 +94,7 @@ void DMA::main()
         cout << "start date not located in the table for some reason" << endl;
     }
     /*Have to ask sir since current day has to be included might have to do n-1 here*/
-    int startDate_n_Loc = startDateLoc - (n-1);
+    int startDate_n_Loc = startDateLoc - n;
     curSum = 0 ;
     cursquaredSum = 0;
     for(int i = startDate_n_Loc ; i<startDate_n_Loc+n ; i++)
@@ -99,15 +103,14 @@ void DMA::main()
         cursquaredSum += table.rows[i].close * table.rows[i].close;
     }   
 
-
-    for(int i = startDateLoc ; i<  table.rows.size()-1 ; i++)
+    for(int i = startDateLoc ; i<  table.rows.size() ; i++)
     {
         curPrice = table.rows[i].close ;
         curLoc = i;
         check() ;
         writeCashFlow(table.rows[i].date);
     }
-    writeCSVfiles();
     squareOff() ;
+    writeCSVfiles();
     writeFinalPNL();
 }
