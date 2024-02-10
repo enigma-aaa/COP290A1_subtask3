@@ -36,8 +36,8 @@ else
 	./main $(strategy) $(symbol1) $(symbol2) $(x) $(n) $(threshold) $(start_date) $(end_date) $(stop_loss_threshold)
 endif
 endif
-buildProg: main.o parser.o ADX.o basicStart.o DMA.o DMAplus.o MACD.o RSI.o dateUtil.o
-	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o -o main
+buildProg: main.o parser.o ADX.o basicStart.o DMA.o DMAplus.o MACD.o RSI.o dateUtil.o linearRegNorm.o
+	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o $(BinFolder)linearRegNorm.o -o main
 main.o: $(SrcFolder)main.cpp
 	$(Compiler) $(Flags) $(SrcFolder)main.cpp -o $(BinFolder)main.o
 parser.o: $(SrcFolder)parser.cpp
@@ -48,8 +48,10 @@ ADX.o: $(SrcFolder)ADX.cpp
 basicStart.o: $(SrcFolder)basicStart.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)basicStart.cpp -o $(BinFolder)basicStart.o
 DMA.o: $(SrcFolder)DMA.cpp 
+
 	$(Compiler) $(Flags) $(SrcFolder)DMA.cpp -o $(BinFolder)DMA.o
 DMAplus.o: $(SrcFolder)DMAplus.cpp 
+
 	$(Compiler) $(Flags) $(SrcFolder)DMAplus.cpp -o $(BinFolder)DMAplus.o
 MACD.o: $(SrcFolder)MACD.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)MACD.cpp -o $(BinFolder)MACD.o
@@ -57,6 +59,8 @@ RSI.o: $(SrcFolder)RSI.cpp
 	$(Compiler) $(Flags) $(SrcFolder)RSI.cpp -o $(BinFolder)RSI.o
 dateUtil.o: $(SrcFolder)dateUtil.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)dateUtil.cpp -o $(BinFolder)dateUtil.o
+linearRegNorm.o: $(SrcFolder)linearRegNorm.cpp 
+	$(Compiler) $(Flags) $(SrcFolder)linearRegNorm.cpp -o $(BinFolder)linearRegNorm.o
 clearObjs:
 	rm -rf $(BinFolder)*
 clearExe:
