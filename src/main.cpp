@@ -142,7 +142,7 @@ void handleADX(int argc,char* argv[]){
     //cout << "endDate str is:" << endDateStr << endl;
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
-    ADXStrat strat(n,x,adx_threshold,startDate,endDate);
+    ADXStrat strat(n,x,adx_threshold,startDate,endDate,symbol);
     strat.main();
 }
 void handleRegression(int argc,char* argv[]){

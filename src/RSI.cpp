@@ -23,9 +23,11 @@ void RSI::firstPrice(int startDateLoc){
     int startDate_n_Loc = startDateLoc - n;
     curBal = 0;
     noShares = 0;
+    curGainSum = 0;
+    curLossSum = 0;
     for(int i=startDate_n_Loc;i<startDateLoc;i++){
-        double curGain = max(table.rows[i].close - table.rows[i-1].close,0.0);
-        double curLoss = max(table.rows[i-1].close - table.rows[i].close,0.0);
+        double curGain = max(table.rows[i].close   - table.rows[i-1].close,0.0);
+        double curLoss = max(table.rows[i-1].close - table.rows[i].close  ,0.0);
         curGainSum += curGain;
         curLossSum += curLoss;
     }
@@ -80,13 +82,16 @@ void RSI::main()
     for(int i=startDateLoc;i<table.rows.size();i++){
         curDate = table.rows[i].date;
         curPrice = table.rows[i].close;
-        double oldProfit = max(table.rows[i-n].close-table.rows[i-n-1].close,0.0);
-        double oldLoss   = max(table.rows[i-n-1].close-table.rows[i-n].close,0.0);
-        double curProfit = max(table.rows[i].close-table.rows[i-1].close,0.0);
-        double curLoss   = max(table.rows[i-1].close-table.rows[i].close,0.0);
+        cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
+        double oldProfit = max(table.rows[i-n].close   - table.rows[i-n-1].close,0.0);
+        double curProfit = max(table.rows[i].close     - table.rows[i-1].close,0.0);
+
+        double oldLoss   = max(table.rows[i-n-1].close - table.rows[i-n].close,0.0);
+        double curLoss   = max(table.rows[i-1].close   - table.rows[i].close,0.0);
         curGainSum = curGainSum - oldProfit + curProfit;
-        curLossSum = curGainSum - oldLoss + curLoss;
+        curLossSum = curLossSum - oldLoss + curLoss;
         check();
+        cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
         writeCashFlow();            
     }        
     writeCSVfiles();

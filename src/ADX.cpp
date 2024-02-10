@@ -1,6 +1,6 @@
 #include "ADX.h"
-ADXStrat::ADXStrat(int n,int x,double adx_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate):
-n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate){
+ADXStrat::ADXStrat(int n,int x,double adx_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName):
+n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
     noShares = 0;
     curBal = 0;
     modStartDate = subtractDate(startDate,2*n);
@@ -18,7 +18,16 @@ void ADXStrat::sell(){
 } 
 void ADXStrat::first(int startDateLoc){
     int startDate_n_Loc = startDateLoc -n;
-    ATR = 0;
+    PriceTableRow& curRow  = table.rows[startDateLoc];
+//    PriceTableRow& prevRow = table.rows[startDateLoc-1];
+    double a = curRow.high - curRow.low;
+    double b = curRow.high - curRow.prevClose;
+    double c = curRow.low - curRow.prevClose;
+    curTR = max(a,b,c);
+    ATR = curTR;
+    DIplus = 0;
+    DIminus = 0;
+    /*
     for(int i = startDate_n_Loc;i<startDateLoc;i++){
         PriceTableRow& curRow = table.rows[i];
         PriceTableRow& prevRow = table.rows[i-1];
@@ -34,6 +43,8 @@ void ADXStrat::first(int startDateLoc){
         ADX = alphaATR*(DX - ADX) + ADX;            
     }
     return;
+    */
+    //do not need above misunderstood definition
 }
 void ADXStrat::writeCashFlow(chrono::year_month_day curDate){
     flow.addRow(curDate,curBal);
@@ -83,6 +94,9 @@ double ADXStrat::max(double a,double b){
     }
     return b;
 }
+double ADXStrat::max(double a,double b,double c){
+    return max(max(a,b),c);
+}
 void ADXStrat::main(){
     table = getPriceTable(symbolName,modStartDate,endDate);
     curPrice = 0;
@@ -96,11 +110,12 @@ void ADXStrat::main(){
         cout << "start date not located in table for some reason" << endl;
     }
     first(startDateLoc);
-    for(int i=startDateLoc;i<table.rows.size();i++){
+    //may have to change starting index to deal with threshold=0
+    for(int i=startDateLoc+1;i<table.rows.size();i++){
         curPrice = table.rows[i].close;
         curDate = table.rows[i].date;
         PriceTableRow& curRow = table.rows[i];
-        PriceTableRow& prevRow = table.rows[i];
+        PriceTableRow& prevRow = table.rows[i-1];
         curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
         DMplus = max(0.0,curRow.high - prevRow.high);
         DMminus = max(0.0,curRow.low - prevRow.low);
@@ -109,7 +124,7 @@ void ADXStrat::main(){
         double DMminusByATR = DMminus/ATR;
         DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
         DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
-        DX = ((DIplus + DIminus)*100)/(DIplus - DIminus);
+        DX = ((DIplus - DIminus)*100)/(DIplus + DIminus);
         ADX = alphaATR*(DX - ADX) + ADX;     
         check();
         writeCashFlow(curRow.date);

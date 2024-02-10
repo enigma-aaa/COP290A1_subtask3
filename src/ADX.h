@@ -27,7 +27,7 @@ public:
     double DIplus = 0,DIminus = 0;
     double DX = 0;
     double ADX = 0;
-    ADXStrat(int n,int x,double adx_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate);
+    ADXStrat(int n,int x,double adx_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
     void buy();
     void sell(); 
     void first(int startDateLoc);
@@ -37,5 +37,6 @@ public:
     void squareOff();
     void writeCSVfiles();
     double max(double a,double b);
+    double max(double a,double b,double c);
     void main();
 };

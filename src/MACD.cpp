@@ -41,24 +41,29 @@ void MACDStrat::squareOff(){
     }
 }
 void MACDStrat::first(int startDateLoc){
+    /*
     int startDate_n1_Loc = startDateLoc - n1 + 1;
     int startDate_n2_Loc = startDateLoc - n2 + 1;
     int startDate_nSign_Loc = startDateLoc - nSig + 1;
-    /* confirm that intially has to zero*/
+    //confirm that intially has to zero
     longEWM = 0;
     shortEWM = 0;
-    /* have to recheck all the limits here may 
-        require less than equal to instead of less than in many places*/
-    /*again here also when including curDate do we take only n1-1 elements definetly confirm with sir*/
+    //have to recheck all the limits here may 
+    //require less than equal to instead of less than in many places
+    //again here also when including curDate do we take only n1-1 elements definetly confirm with sir
     for(int i=startDate_n1_Loc;i<startDate_n1_Loc +n1;i++){
         longEWM = alpha1*(table.rows[i].close - longEWM) + longEWM;
     }
     for(int i=startDate_n2_Loc;i<startDate_n2_Loc + n2;i++){
         shortEWM = alpha2*(table.rows[i].close - shortEWM) + shortEWM; 
     }
-    /*Signal = 0 at time t= 0*/
+    //Signal = 0 at time t= 0
     signal = 0;
     check();
+    */
+    longEWM  = table.rows[startDateLoc].close;
+    shortEWM = table.rows[startDateLoc].close;
+    signal = 0;    
 }
 void MACDStrat::writeCashFlow(chrono::year_month_day curDate){
     flow.addRow(curDate,curBal);
