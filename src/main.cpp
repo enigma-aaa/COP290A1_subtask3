@@ -100,7 +100,7 @@ void handleMACD(int argc,char* argv[]){
     //cout << "endDate str is:" << endDateStr << endl;
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
-    MACDStrat strat(x);
+    MACDStrat strat(x,startDate,endDate,symbol);
     strat.main();
 }
 void handleRSI(int argc,char* argv[]){

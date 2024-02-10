@@ -27,7 +27,7 @@ public:
     chrono::year_month_day curDate;
     double curBal;
     int noShares;
-    MACDStrat(int x);
+    MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
     void buy();
     void sell();
     void check();

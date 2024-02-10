@@ -1,7 +1,7 @@
 #include "RSI.h"
 
 RSI::RSI(int n,int x,double oversold_threshold,double overbought_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
-:n(n),x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
+:n(n),x(x),oversold_threshold(oversold_threshold),overbought_threshold(overbought_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
     modStartDate = subtractDate(startDate,2*n);
 }
 void RSI::buy()
@@ -34,6 +34,7 @@ void RSI::check()
 {
     double RS = curGainSum/curLossSum;
     double RSI = 100 - 100/(1+RS);
+    cout << "RSI is:" << RSI << endl;
     if(RSI < oversold_threshold){
         if(noShares < x){
             buy();
@@ -78,6 +79,7 @@ void RSI::main()
     firstPrice(startDateLoc);
     for(int i=startDateLoc;i<table.rows.size();i++){
         curDate = table.rows[i].date;
+        curPrice = table.rows[i].close;
         double oldProfit = max(table.rows[i-n].close-table.rows[i-n-1].close,0.0);
         double oldLoss   = max(table.rows[i-n-1].close-table.rows[i-n].close,0.0);
         double curProfit = max(table.rows[i].close-table.rows[i-1].close,0.0);

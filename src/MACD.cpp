@@ -1,8 +1,10 @@
 #include "MACD.h"
-MACDStrat::MACDStrat(int x):x(x){
+MACDStrat::MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
+:x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
     noShares = 0;
     curBal = 0;
     modStartDate = subtractDate(startDate,2*n2);
+    cout << "modStartDate is: year:" << int(modStartDate.year()) << " month:" << unsigned(modStartDate.month()) << " day:" << unsigned(modStartDate.day()) << endl;
 }
 void MACDStrat::buy(){
     noShares++;
