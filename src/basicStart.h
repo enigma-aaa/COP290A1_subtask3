@@ -11,7 +11,7 @@ class Basic{
         chrono::year_month_day startDate,endDate,modStartDate;
         string symbolName;
 
-        PriceTable table;   
+        PriceTable* table;   
         CashFlow flow;
         OrderStats stats;
 
