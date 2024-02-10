@@ -76,14 +76,18 @@ public:
 
     void squareOff()
     {
-        
-        if(noShares > 0)
+        curBal = curBal + noShares*table.rows.back().close ;
+        if(noShares > 0 )
         {
-            curBal  = curBal + noShares * table.rows[table.rows.size()-1].close ; 
-            stats.addRow(table.rows.back().date , "SELL" , noShares , table.rows.back().close) ;
-            noShares = 0 ;
+            stats.addRow(table.rows.back().date, "SELL" , noShares ,curPrice) ;
+            flow.addRow(table.rows.back().date , curBal) ;
         }
-    
+        if(noShares < 0)
+        {
+            stats.addRow(table.rows.back().date, "BUY" , noShares , curPrice) ;
+            flow.addRow(table.rows.back().date , curBal) ;
+        }
+        noShares = 0 ;
     }
 
     void main()
@@ -119,7 +123,7 @@ public:
         for(int i = startDateLoc ; i<  table.rows.size()-1 ; i++)
         {
             curPrice = table.rows[i].close ;
-            curLoc = startDateLoc ;
+            curLoc = i ;
             check() ;
         }
         squareOff() ;
