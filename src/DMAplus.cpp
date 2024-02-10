@@ -1,7 +1,13 @@
 #include "DMAplus.h"
     
-DMAPlus::DMAPlus(int n,int x,double p,int max_hold_days,double c1,double c2)
-:n(n),x(x),p(p),max_hold_days(max_hold_days),c1(c1),c2(c2){}
+DMAPlus::DMAPlus(int n,int x,double p,int max_hold_days,
+double c1,double c2,chrono::year_month_day startDate,
+chrono::year_month_day endDate,string symbolName)
+:n(n),x(x),p(p),max_hold_days(max_hold_days),c1(c1),c2(c2),symbolName(symbolName),startDate(startDate),endDate(endDate){
+    cout << "constructed object with" << endl;
+    cout << "n is:" << n << " x is:" << x << " p is:" << p << " max_hold_days:" << max_hold_days << " c1:" << c1 << " c2:" << c2 << endl;
+    modStartDate = subtractDate(startDate,2*n);
+}
 
 //first+n is the index of the start function
 void DMAPlus::firstPrice(int first){
@@ -25,7 +31,7 @@ void DMAPlus::buy()
     noShares++;
     curBal = curBal - curPrice;
     //forgot to add quantity column have to handle that
-    stats.addRow(curDate,"BUY",noShares,curPrice);
+    stats.addRow(curDate,"BUY",noShares,curBal);
     //flow.addRow(curDate,curBal);
     if(!sellDates.empty()){
         //if have sold some stock as in shorted it but have not balanced it out then do this
@@ -39,7 +45,7 @@ void DMAPlus::sell()
 {
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(curDate,"SELL",noShares,curPrice);
+    stats.addRow(curDate,"SELL",noShares,curBal);
     //flow.addRow(curDate,curBal);
     if(!buyDates.empty()){
         buyDates.pop();
@@ -117,6 +123,7 @@ void DMAPlus::main(){
             startDateLoc = i;
         }
     }
+    cout << "startDateLoc is:" << startDateLoc << endl;
     if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
 
     int startDate_n_Loc = startDateLoc - n;
@@ -124,6 +131,7 @@ void DMAPlus::main(){
     firstPrice(startDate_n_Loc);
 
     for(int i=startDateLoc;i<table.rows.size()-1;i++){
+        curPrice = table.rows[i].close;
         priceChange_n = table.rows[i].close - table.rows[i-n].close;
         curDate = table.rows[i].date;
         //definetly have to crosscheck these indices
@@ -139,6 +147,7 @@ void DMAPlus::main(){
         check();
         handleMaxHold();
         writeCashFlow();
+        cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     writeCSVfiles();
     squareOff();

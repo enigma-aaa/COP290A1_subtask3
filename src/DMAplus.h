@@ -35,7 +35,9 @@ public:
     double curBal;
     int noShares;
     
-    DMAPlus(int n,int x,double p,int max_hold_days,double c1,double c2);
+    DMAPlus(int n,int x,double p,int max_hold_days,
+    double c1,double c2,chrono::year_month_day startDate
+    ,chrono::year_month_day endDate,string symbolName);
     //first+n is the index of the start function
     void firstPrice(int first);
     void buy();

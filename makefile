@@ -1,5 +1,5 @@
 Compiler=g++
-Flags=-std=c++20 -c
+Flags=-std=c++20 -c -g
 BinFolder=./bin/
 SrcFolder=./src/
 
@@ -11,6 +11,7 @@ ifeq ($(strategy),DMA)
 	./main $(strategy) $(symbol) $(n) $(x) $(p) $(start_date) $(end_date)
 endif
 ifeq ($(strategy),DMA++)
+	echo "DMA++"
 	./main $(strategy) $(symbol) $(x) $(p) $(n) $(max_hold_days) $(c1) $(c2) $(start_date) $(end_date)
 endif
 ifeq ($(strategy),MACD)
@@ -35,8 +36,6 @@ else
 	./main $(strategy) $(symbol1) $(symbol2) $(x) $(n) $(threshold) $(start_date) $(end_date) $(stop_loss_threshold)
 endif
 endif
-temp:buildProg
-	./main
 buildProg: main.o parser.o ADX.o basicStart.o DMA.o DMAplus.o MACD.o RSI.o dateUtil.o
 	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o -o main
 main.o: $(SrcFolder)main.cpp

@@ -29,6 +29,7 @@ PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chr
     /*for(PriceTableRow& row:table.rows){
         cout << row.getString() << endl;
     } */ 
+    cout << "Number of rows in table:" << table.rows.size() << endl;
     return table;  
 }
 /* a-b */
@@ -52,8 +53,10 @@ chrono::year_month_day subtractDate(chrono::year_month_day date,int n){
     //cout << "Years is" << local_tm.tm_year + 1900 << endl;
     //cout << "Month is:" << local_tm.tm_mon + 1 << endl;
     //cout << "Day is:" << local_tm.tm_mday << endl;
-    int year = local_tm.tm_year;
-    int month = local_tm.tm_mon;
+    //relative to 1900 hence have to add here
+    int year = local_tm.tm_year + 1900;
+    //months starting from 0
+    int month = local_tm.tm_mon + 1;
     int day = local_tm.tm_mday;
     return chrono::year_month_day(chrono::year(year),chrono::month(month),chrono::day(day));
 }

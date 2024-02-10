@@ -24,7 +24,7 @@ string date2StrYMD(chrono::year_month_day date){
 }
 
 
-OrderStatsRow::OrderStatsRow(chrono::year_month_day date , string OrderDirection , int quantity , double price)
+OrderStatsRow::OrderStatsRow(chrono::year_month_day date , string orderDirection , int quantity , double price)
 :date(date),orderDirection(orderDirection),quantity(quantity),price(price)
 {}
 string OrderStatsRow::getString()
@@ -60,13 +60,16 @@ void OrderStats::writeToCsv(string filename)
 }
 void OrderStats::addRow(chrono::year_month_day date , string orderDirection , int quantity , double price)
 {
+    //cout << "Trying to add row in order stats" << endl;
     OrderStatsRow a = OrderStatsRow(date , orderDirection , quantity , price) ;
+    //cout << "created order stats object" << endl;
     rows.push_back(a) ;
+    //cout << "added object to the row" << endl;
 }
 
 
 CashFlowRows::CashFlowRows(chrono::year_month_day date , double price)
-:date(date),cashflow(cashflow){}
+:date(date),cashflow(price){}
 
 string CashFlowRows::getString()
 {

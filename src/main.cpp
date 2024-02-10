@@ -74,6 +74,8 @@ void handleDMAplus(int argc,char* argv[]){
     //cout << "c1:" << c1 << endl;
     float c2 = stof(argv[8]);
     //cout << "c2:" << c2 << endl;
+    //cout << "argc is:" << argc << endl;
+    //cout << "argv[9]:" << argv[9] << " argv[10]:" << argv[10] << endl;
     string startDateStr(argv[9]);
     //cout << "startDate str is:" << startDateStr << endl;
     string endDateStr(argv[10]);
@@ -82,7 +84,7 @@ void handleDMAplus(int argc,char* argv[]){
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     chrono::year_month_day endDate = str2Date(endDateStr);
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
-    DMAPlus strat(n,x,p,max_hold_days,c1,c2);
+    DMAPlus strat(n,x,p,max_hold_days,c1,c2,startDate,endDate,symbol);
     strat.main();
 }
 void handleMACD(int argc,char* argv[]){
@@ -206,7 +208,7 @@ void handlePairs(int argc,char* argv[]){
         //cout << "Wrong number of arguments for pair" << endl;
     }
 }
-/*
+
 int main(int argc,char* argv[]){
     string startegyName(argv[1]);
     if(startegyName == "BASIC"){
@@ -239,8 +241,8 @@ int main(int argc,char* argv[]){
         //cout << "Invalid strategy" << endl;
     }
 }
-*/
 
+/*
 int main(){
     string symbolName = "TATASTEEL";
     string startDateStr = "01-02-2024";
@@ -249,3 +251,4 @@ int main(){
     chrono::year_month_day endDate = str2Date(endDateStr);
     PriceTable table = getPriceTable(symbolName,startDate,endDate);
 }
+*/

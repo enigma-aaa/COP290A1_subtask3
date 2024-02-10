@@ -3,6 +3,7 @@
 Basic::Basic(int n,int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName):
 n(n),x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
     modStartDate = subtractDate(startDate,2*n);
+    
 }
 /*first price opver here is not the price at the start 
     date but price n days before the start date*/
@@ -16,6 +17,7 @@ void Basic::firstPrice(double orgPrice){
 void Basic::nextPrice(double newPrice,chrono::year_month_day newDate){
     double oldPrice = curPrice;
     curPrice = newPrice;
+    //cout << "oldPrice:" << oldPrice << " newPrice:" << newPrice << endl;
     if(oldPrice < newPrice){
         noIncDays++;
         noDecDays = 0;
@@ -32,7 +34,7 @@ void Basic::nextPrice(double newPrice,chrono::year_month_day newDate){
             noDecDays--;
         }
     }
-    if(newPrice == curPrice){
+    if(newPrice == oldPrice){
         noIncDays = 0;
         noDecDays = 0;            
     }
@@ -41,12 +43,18 @@ void Basic::buy(chrono::year_month_day date){
     noShares++;
     curBal = curBal - curPrice;
     //Assuming showing new quantity here
-    stats.addRow(date,"BUY",noShares,curPrice);
+    //cout << "Trying to addRow in buy" << endl;
+    //quantity here is 1
+    stats.addRow(date,"BUY",1,curPrice);
+    //cout << "Added buy row" << endl;
 }
 void Basic::sell(chrono::year_month_day date){
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(date,"SELL",noShares,curPrice);
+    //cout << "Trying to addRow in sell" << endl;
+    //quanity here is 1
+    stats.addRow(date,"SELL",1,curPrice);
+    //cout << "Added sell row" << endl;
 }
 /*Ensure price set to closing price before calling*/
 void Basic::squareOff(chrono::year_month_day date){
@@ -84,16 +92,25 @@ void Basic::main(){
         }
     }
     if(startDateLoc == -1) { cout << "start date not located in the table for some reason" << endl;}
-    
+    //cout << "startDateLoc is:" << startDateLoc << endl;
+
     int startDate_n_Loc = startDateLoc - n;
+    //cout << "startDaten_Loc is:" << startDate_n_Loc << endl;
     double firstprice = table.rows[startDate_n_Loc].close;
     firstPrice(firstprice);
 
     for(int i=startDate_n_Loc+1;i<table.rows.size();i++){
         double newPrice = table.rows[i].close;
+        //cout << "Read newPrice" << endl;
         chrono::year_month_day curDate = table.rows[i].date;
+        //cout << "read newDate" << endl;
         nextPrice(newPrice,curDate);
+        //cout << "executed nexPrice" << endl;
         writeCashFlow(curDate);
+        //cout << "exectuted writeCashFlow" << endl;
+        //cout << "currently noInc is:" << noIncDays << endl;
+        //cout << "currently noDec is:" << noDecDays << endl;
+        //cout << "Wrote cashflow for i=" << i << endl;
     }
     writeCSVfiles();
     squareOff(table.rows.back().date);
