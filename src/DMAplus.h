@@ -19,13 +19,14 @@ public:
     /*only add trades which have not been balanced*/
     /*not both sellDates and buyDates can have elements 
         recheck to confirm*/
-    queue<chrono::year_month_day> sellDates;
-    queue<chrono::year_month_day> buyDates;
+    queue<int> sellDates;
+    queue<int> buyDates;
 
     PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
+    int curLoc;
     double curPrice;
     chrono::year_month_day curDate;
     double curAbsoluteSum;
@@ -44,8 +45,8 @@ public:
     void firstPrice(int first);
     void buy();
     void sell();
-    void handleMaxHold();
-    void check();
+    int handleMaxHold();
+    int check();
     void writeCashFlow();
     void writeCSVfiles();
     void writeFinalPNL();

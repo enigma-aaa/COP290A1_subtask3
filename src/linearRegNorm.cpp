@@ -108,9 +108,10 @@ void LinearRegression::fit()
 
     for(int i = 0 ; i<train_table.rows.size() ; i++)
     {
-        if(train_table.rows[i].date == train_start_date)
-        {
-            startLoc = i ;
+        if(grtrEqual(table->rows[i].date,startDate)){
+            startDateLoc = i;
+            cout << "startDateLOc is:" << startDateLoc << endl;
+            break;
         }
     }
     vector<vector<double>> X;
@@ -262,9 +263,10 @@ void LinearRegression::main()
     int startDateLoc = -1;
     for (int i = 0; i < table->rows.size(); i++)
     {
-        if (table->rows[i].date == start_date)
-        {
+        if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
+            cout << "startDateLOc is:" << startDateLoc << endl;
+            break;
         }
     }
 

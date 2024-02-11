@@ -2,7 +2,7 @@
 
 Basic::Basic(int n,int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName):
 n(n),x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
-    modStartDate = subtractDate(startDate,2*n);
+    modStartDate = subtractDate(startDate,max(2*n,30));
     table = nullptr;
 }
 Basic::Basic(){}
@@ -68,8 +68,8 @@ void Basic::writeCashFlow(chrono::year_month_day date){
 }
 void Basic::writeCSVfiles(){
     string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "cashflow.csv";
-    string csv_order_stats = baseFilePath + "order_stats.csv";
+    string csv_cashflow = baseFilePath + "daily_pnl.csv";
+    string csv_order_stats = baseFilePath + "order_statistics.csv";
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);
 }

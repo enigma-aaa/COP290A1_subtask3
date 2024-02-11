@@ -27,12 +27,21 @@ string date2StrYMD(chrono::year_month_day date){
 OrderStatsRow::OrderStatsRow(chrono::year_month_day date , string orderDirection , int quantity , double price)
 :date(date),orderDirection(orderDirection),quantity(quantity),price(price)
 {}
+
+string padNum(string input,int size){
+    if(input.size() < size){
+        int diff = size - input.size();
+        string zeroes = string(diff,'0');
+        return zeroes + input;
+    }
+    return input;
+}
 string OrderStatsRow::getString()
 {
     string temp = ""; 
-    temp+= to_string(unsigned(date.day()));
+    temp+= padNum(to_string(unsigned(date.day())) ,2);
     temp+= '/' ;
-    temp+= to_string(unsigned(date.month())) ;
+    temp+= padNum(to_string(unsigned(date.month())),2) ;
     temp+= '/' ;
     temp+= to_string(int(date.year())) ;
     temp+=',' ;

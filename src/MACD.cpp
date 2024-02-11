@@ -33,12 +33,12 @@ void MACDStrat::check(){
 void MACDStrat::squareOff(){
     if(noShares > 0){
         curBal = curBal + noShares * curPrice;
-        stats.addRow(table->rows.back().date,"SELL",noShares,curPrice);
+//        stats.addRow(table->rows.back().date,"SELL",noShares,curPrice);
         noShares = 0;
     }
     if(noShares < 0){
         curBal = curBal + noShares * curPrice;
-        stats.addRow(table->rows.back().date,"BUY",noShares,curPrice);
+//        stats.addRow(table->rows.back().date,"BUY",noShares,curPrice);
         noShares = 0;
     }
 }
@@ -95,8 +95,10 @@ void MACDStrat::main(){
     curPrice = 0;
     int startDateLoc = -1;
     for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
+        if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
+            cout << "startDateLOc is:" << startDateLoc << endl;
+            break;
         }
     }
     if(startDateLoc == -1){
@@ -109,11 +111,13 @@ void MACDStrat::main(){
     {
         curPrice = table->rows[i].close;
         curDate = table->rows[i].date;
-        longEWM = alpha1*(curPrice - longEWM) + longEWM;
-        shortEWM = alpha2*(curPrice - shortEWM) + shortEWM;
+        longEWM = alpha2*(curPrice - longEWM) + longEWM;
+        shortEWM = alpha1*(curPrice - shortEWM) + shortEWM;
         MACD = shortEWM - longEWM;
         signal = alphaSig*(MACD - signal) + signal;
         check();
+        cout<<"signal "<<signal<<" macd "<<MACD<<" ";
+        printDate(curDate); cout << "shortEWM:" << shortEWM << " longEWM:" << longEWM << endl;
         writeCashFlow(table->rows[i].date);
     }
     writeCSVfiles();
@@ -144,6 +148,8 @@ void MACDStrat::multiMain(PriceTable* srcTable){
         MACD = shortEWM - longEWM;
         signal = alphaSig*(MACD - signal) + signal;
         check();
+        cout<<"signal "<<signal<<" macd "<<MACD<<" ";
+        printDate(curDate); cout << endl;
         writeCashFlow(table->rows[i].date);
     }
     //writeCSVfiles();
