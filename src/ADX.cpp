@@ -127,13 +127,27 @@ void ADXStrat::main(){
         DMplus = max(0.0,curRow.high - prevRow.high);
         DMminus = max(0.0,curRow.low - prevRow.low);
         ATR = alphaATR*(curTR - ATR) + ATR;
-        double DMplusByATR = DMplus/ATR;
-        double DMminusByATR = DMminus/ATR;
+        double DMplusByATR,DMminusByATR;
+        
+        if(ATR != 0){
+            DMplusByATR = DMplus/ATR;
+            DMminusByATR = DMminus/ATR;
+        }else{
+            DMplusByATR = 0;
+            DMminusByATR = 0;
+        }
         DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
         DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
-        DX = ((DIplus - DIminus)*100)/(DIplus + DIminus);
+        double sum = DIplus + DIminus;
+        if(sum != 0){
+            DX = ((DIplus - DIminus)*100)/sum;
+        }else{
+            DX = 0;
+        }
         ADX = alphaATR*(DX - ADX) + ADX;     
+        ADX = 0;
         check();
+        //printDate(curDate); cout << " ADX:" << ADX << endl;
         writeCashFlow(curRow.date);
     }
     writeCSVfiles();

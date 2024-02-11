@@ -8,9 +8,9 @@ LinearRegression::LinearRegression(chrono::year_month_day train_start_date, chro
     noShares = 0 ;
     curBal = 0 ;
     curLoc = -1 ;
-
+    mod_start_date = subtractDate(start_date, 5);
 }
-
+LinearRegression::LinearRegression(){}
 vector<vector<double>> LinearRegression::inverse(vector<vector<double>> &v)
 {
     int n = v.size();
@@ -114,7 +114,7 @@ void LinearRegression::fit()
         }
     }
     vector<vector<double>> X;
-    
+    cout << "startLoc in linear Regression is:" << startLoc << endl;
 
     vector<double> temp;
 
@@ -174,13 +174,13 @@ double LinearRegression::predict(int tableLoc)
 {
     double ans = 0;
     ans += coefficients[0];
-    ans += coefficients[1] * table.rows[tableLoc - 1].close;
-    ans += coefficients[2] * table.rows[tableLoc - 1].open;
-    ans += coefficients[3] * table.rows[tableLoc - 1].VWAP;
-    ans += coefficients[4] * table.rows[tableLoc - 1].low;
-    ans += coefficients[5] * table.rows[tableLoc - 1].high;
-    ans += coefficients[6] * table.rows[tableLoc - 1].noTrades;
-    ans += coefficients[7] * table.rows[tableLoc].open;
+    ans += coefficients[1] * table->rows[tableLoc - 1].close;
+    ans += coefficients[2] * table->rows[tableLoc - 1].open;
+    ans += coefficients[3] * table->rows[tableLoc - 1].VWAP;
+    ans += coefficients[4] * table->rows[tableLoc - 1].low;
+    ans += coefficients[5] * table->rows[tableLoc - 1].high;
+    ans += coefficients[6] * table->rows[tableLoc - 1].noTrades;
+    ans += coefficients[7] * table->rows[tableLoc].open;
     return ans;
 }
 
@@ -188,15 +188,15 @@ void LinearRegression::buy()
 {
     noShares++;
     curBal = curBal - curPrice;
-    stats.addRow(table.rows[curLoc].date, "BUY", noShares, curPrice);
-    flow.addRow(table.rows[curLoc].date, curBal);
+    stats.addRow(table->rows[curLoc].date, "BUY", noShares, curPrice);
+    flow.addRow(table->rows[curLoc].date, curBal);
 }
 void LinearRegression::sell()
 {
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(table.rows[curLoc].date, "SELL", noShares, curPrice);
-    flow.addRow(table.rows[curLoc].date, curBal);
+    stats.addRow(table->rows[curLoc].date, "SELL", noShares, curPrice);
+    flow.addRow(table->rows[curLoc].date, curBal);
 }
 
 void LinearRegression::check()
@@ -240,42 +240,62 @@ void LinearRegression::writeFinalPNL(){
 }
 void LinearRegression::squareOff()
 {
-    curBal = curBal + noShares * table.rows.back().close;
+    curBal = curBal + noShares * table->rows.back().close;
     if (noShares > 0)
     {
-        stats.addRow(table.rows.back().date, "SELL", noShares, curPrice);
-        flow.addRow(table.rows.back().date, curBal);
+        stats.addRow(table->rows.back().date, "SELL", noShares, curPrice);
+        flow.addRow(table->rows.back().date, curBal);
     }
     if (noShares < 0)
     {
-        stats.addRow(table.rows.back().date, "BUY", noShares, curPrice);
-        flow.addRow(table.rows.back().date, curBal);
+        stats.addRow(table->rows.back().date, "BUY", noShares, curPrice);
+        flow.addRow(table->rows.back().date, curBal);
     }
     noShares = 0;
 }
 void LinearRegression::main()
 {
-    chrono::year_month_day mod_start_date = subtractDate(start_date, 5);
-    table = getPriceTable(symbolName, mod_start_date, end_date);
-    
     fit() ;
+    PriceTable createTable = getPriceTable(symbolName, mod_start_date, end_date);
+    table = &createTable;
 
     int startDateLoc = -1;
-    for (int i = 0; i < table.rows.size(); i++)
+    for (int i = 0; i < table->rows.size(); i++)
     {
-        if (table.rows[i].date == start_date)
+        if (table->rows[i].date == start_date)
         {
             startDateLoc = i;
         }
     }
 
-    for (int i = startDateLoc; i < table.rows.size(); i++)
+    for (int i = startDateLoc; i < table->rows.size(); i++)
     {
-        curPrice = table.rows[i].close;
+        curPrice = table->rows[i].close;
         curLoc = i;
         check();
     }
     squareOff();
     writeCSVfiles() ;
     writeFinalPNL();
+}
+
+void LinearRegression::multiMain(PriceTable* srcTable){
+    table = srcTable;
+
+    int startDateLoc = -1;
+    for (int i = 0; i < table->rows.size(); i++)
+    {
+        if (table->rows[i].date == start_date)
+        {
+            startDateLoc = i;
+        }
+    }
+
+    for (int i = startDateLoc; i < table->rows.size(); i++)
+    {
+        curPrice = table->rows[i].close;
+        curLoc = i;
+        check();
+    }
+    squareOff();
 }
