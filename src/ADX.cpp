@@ -7,6 +7,7 @@ n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate),sym
     alphaATR = 2.0/((double)(n+1));
     table = nullptr;
 }
+ADXStrat::ADXStrat(){}
 void ADXStrat::buy(){
     noShares++;
     curBal = curBal - curPrice;
@@ -63,10 +64,14 @@ void ADXStrat::writeFinalPNL(){
 }
 void ADXStrat::check(){
     if(ADX > adx_threshold){
-        buy();
+        if(noShares < x){
+            buy();
+        }
     } 
     if(ADX < adx_threshold){
-        sell();
+        if(noShares > -x){
+            sell();
+        }
     }
 }
 void ADXStrat::squareOff(){

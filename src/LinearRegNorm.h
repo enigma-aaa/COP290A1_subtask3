@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <cmath>

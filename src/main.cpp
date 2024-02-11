@@ -9,6 +9,8 @@
 #include "DMAplus.h"
 #include "MACD.h"
 #include "RSI.h"
+#include "Best.h"
+#include "Pairs.h"
 #include <cstdlib>
 #include "LinearRegNorm.h"
 using namespace std;
@@ -179,10 +181,12 @@ void handleBestOfAll(int argc,char* argv[]){
     string endDateStr(argv[4]);
     chrono::year_month_day startDate = str2Date(startDateStr);
     chrono::year_month_day endDate = str2Date(endDateStr);
+    Best best(startDate,endDate,symbol);    
     //cout << "startDate str is:" << startDateStr << endl;
     //cout << "endDate str is:" << endDateStr << endl;
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;    
+    best.main();
 }
 void handlePairs(int argc,char* argv[]){
     string symbol1(argv[2]);
@@ -204,7 +208,8 @@ void handlePairs(int argc,char* argv[]){
     //cout << "startDate is:" << unsigned(startDate.day()) << "/" << unsigned(startDate.month()) << "/" << int(startDate.year()) << endl;
     //cout << "endDate is:" << unsigned(endDate.day()) << "/" << unsigned(endDate.month()) << "/" << int(endDate.year()) << endl;        
     if(argc == 9){
-
+        Pairs pairs(x,n,threshold,startDate,endDate,symbol1,symbol2);
+        pairs.main();
     }else if(argc == 10){
         int stop_loss_thres = stoi(argv[9]);
         //cout << "stop_loss_thres:" << stop_loss_thres << endl;

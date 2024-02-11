@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <queue>
@@ -38,6 +39,7 @@ public:
     DMAPlus(int n,int x,double p,int max_hold_days,
     double c1,double c2,chrono::year_month_day startDate
     ,chrono::year_month_day endDate,string symbolName);
+    DMAPlus();
     //first+n is the index of the start function
     void firstPrice(int first);
     void buy();

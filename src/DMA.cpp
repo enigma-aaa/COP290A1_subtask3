@@ -6,7 +6,7 @@ n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
     noShares = 0 ;
     table = nullptr;
 }
-
+DMA::DMA() {}
 void DMA::buy(chrono :: year_month_day date)
 {
     noShares++ ;
@@ -118,6 +118,7 @@ void DMA::main()
 }
 void DMA::multiMain(PriceTable* srcTable)
 {
+    curBal = 0;
     table = srcTable;
     int tableSize = table->rows.size();
     int startDateLoc = -1;

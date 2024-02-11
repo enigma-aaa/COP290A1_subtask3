@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <iomanip>
@@ -25,6 +26,7 @@ public:
     //double curPrice ;
     int curLoc ;
     DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_month_day endDate, string symbolName);
+    DMA();
     void buy(chrono :: year_month_day date);
     void sell(chrono :: year_month_day date);
     void writeCashFlow(chrono::year_month_day curDate);

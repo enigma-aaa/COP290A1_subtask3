@@ -7,6 +7,7 @@ MACDStrat::MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_d
     cout << "modStartDate is: year:" << int(modStartDate.year()) << " month:" << unsigned(modStartDate.month()) << " day:" << unsigned(modStartDate.day()) << endl;
     table = nullptr;
 }
+MACDStrat::MACDStrat() {}
 void MACDStrat::buy(){
     noShares++;
     curBal = curBal - curPrice;

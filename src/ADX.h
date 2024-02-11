@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <cmath>
@@ -28,6 +29,7 @@ public:
     double DX = 0;
     double ADX = 0;
     ADXStrat(int n,int x,double adx_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
+    ADXStrat();
     void buy();
     void sell(); 
     void first(int startDateLoc);

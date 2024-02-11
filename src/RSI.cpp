@@ -5,6 +5,7 @@ RSI::RSI(int n,int x,double oversold_threshold,double overbought_threshold,chron
     modStartDate = subtractDate(startDate,2*n);
     table = nullptr;
 }
+RSI::RSI() {}
 void RSI::buy()
 {
     noShares++ ;
@@ -37,7 +38,7 @@ void RSI::check()
 {
     double RS = curGainSum/curLossSum;
     double RSI = 100 - 100/(1+RS);
-    cout << "RSI is:" << RSI << endl;
+    //cout << "RSI is:" << RSI << endl;
     if(RSI < oversold_threshold){
         if(noShares < x){
             buy();
@@ -84,7 +85,7 @@ void RSI::main()
     for(int i=startDateLoc;i<table->rows.size();i++){
         curDate = table->rows[i].date;
         curPrice = table->rows[i].close;
-        cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
+        //cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
         double oldProfit = max(table->rows[i-n].close   - table->rows[i-n-1].close,0.0);
         double curProfit = max(table->rows[i].close     - table->rows[i-1].close,0.0);
 
@@ -93,7 +94,7 @@ void RSI::main()
         curGainSum = curGainSum - oldProfit + curProfit;
         curLossSum = curLossSum - oldLoss + curLoss;
         check();
-        cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
+        //cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
         writeCashFlow();            
     }        
     writeCSVfiles();
@@ -120,7 +121,7 @@ void RSI::multiMain(PriceTable* srcTable)
     for(int i=startDateLoc;i<table->rows.size();i++){
         curDate = table->rows[i].date;
         curPrice = table->rows[i].close;
-        cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
+        //cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
         double oldProfit = max(table->rows[i-n].close   - table->rows[i-n-1].close,0.0);
         double curProfit = max(table->rows[i].close     - table->rows[i-1].close,0.0);
 
@@ -129,7 +130,7 @@ void RSI::multiMain(PriceTable* srcTable)
         curGainSum = curGainSum - oldProfit + curProfit;
         curLossSum = curLossSum - oldLoss + curLoss;
         check();
-        cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
+        //cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
         writeCashFlow();            
     }        
     //writeCSVfiles();

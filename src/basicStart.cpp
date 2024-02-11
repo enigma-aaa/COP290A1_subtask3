@@ -5,6 +5,7 @@ n(n),x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
     modStartDate = subtractDate(startDate,2*n);
     table = nullptr;
 }
+Basic::Basic(){}
 /*first price opver here is not the price at the start 
     date but price n days before the start date*/
 void Basic::firstPrice(double orgPrice){

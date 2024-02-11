@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <iomanip>
@@ -25,6 +26,7 @@ public:
     double curBal;
 
     RSI(int n,int x,double oversold_threshold,double overbought_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
+    RSI();
     void buy();
     void sell();   
     void writeCashFlow();

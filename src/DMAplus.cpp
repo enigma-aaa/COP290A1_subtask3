@@ -9,7 +9,7 @@ chrono::year_month_day endDate,string symbolName)
     modStartDate = subtractDate(startDate,2*n);
     table = nullptr;
 }
-
+DMAPlus::DMAPlus() {}
 //first+n is the index of the start function
 void DMAPlus::firstPrice(int first){
     curAbsoluteSum = 0;
@@ -149,7 +149,7 @@ void DMAPlus::main(){
         check();
         handleMaxHold();
         writeCashFlow();
-        cout << "i is:" << i << " curBal is:" << curBal  << endl;
+        //cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     writeCSVfiles();
     squareOff();
@@ -188,7 +188,7 @@ void DMAPlus::multiMain(PriceTable* srcTable){
         check();
         handleMaxHold();
         writeCashFlow();
-        cout << "i is:" << i << " curBal is:" << curBal  << endl;
+        //cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     //writeCSVfiles();
     squareOff();
