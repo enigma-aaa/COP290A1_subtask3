@@ -3,12 +3,13 @@
 #include "dateUtil.h"
 #include <cmath>
 #include <iomanip>
-class Pairs{
+class PairsStopLoss{
 public:
     int x;
     int n;
     int noShares = 0;
     double threshold;
+    double stop_loss_threshold;
 
     string symbol1,symbol2;
     chrono::year_month_day startDate,endDate;
@@ -19,11 +20,12 @@ public:
     CashFlow flow;
     OrderStats stats1;
     OrderStats stats2;
+    queue<double> buyMean,buyStandDev;
+    queue<double> sellMean,sellStandDev;
 
     chrono::year_month_day curDate;
-
-    Pairs(int x,int n,double threshold,chrono::year_month_day startDate,
-    chrono::year_month_day endDate,string symbol1,string symbol2);
+    PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
+    chrono::year_month_day startDate,chrono::year_month_day endDate,string symbol1,string symbol2);
     double curPrice1 = 0;
     double curPrice2 = 0;
     double curSpread = 0;

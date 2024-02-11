@@ -1,5 +1,6 @@
-#include "Pairs.h"
-Pairs::Pairs(int x,int n,double threshold,
+#include "PairsStopLoss.h"
+
+PairsStopLoss::PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
 chrono::year_month_day startDate,
 chrono::year_month_day endDate,string symbol1,
 string symbol2):x(x),n(n),threshold(threshold),startDate(startDate),
@@ -8,19 +9,35 @@ endDate(endDate),symbol1(symbol1),symbol2(symbol2){
     cout << "called pairs constructor" << endl;
 }
 
-void Pairs::buy(){
+void PairsStopLoss::buy(){
     noShares++;
     curBal = curBal - curPrice1 + curPrice2;
+    if(!sellMean.empty()){
+        sellMean.pop(); 
+        sellStandDev.pop();
+    }else{
+        buyMean.push(curMean);
+        buyStandDev.push(curDev);
+    }
     stats1.addRow(curDate,"BUY",1,curPrice1);
     stats2.addRow(curDate,"SELL",1,curPrice2);
 }
-void Pairs::sell(){
+
+void PairsStopLoss::sell(){
     noShares--;
     curBal = curBal + curPrice1 - curPrice2;
+    if(!buyMean.empty()){
+        buyMean.pop();
+        buyStandDev.pop();
+    }else{
+        sellMean.push(curMean);
+        sellStandDev.push(curDev);
+    }
     stats1.addRow(curDate,"SELL",1,curPrice1);
     stats2.addRow(curDate,"BUY",1,curPrice2);
 }
-void Pairs::first(int startDateLoc){        
+
+void PairsStopLoss::first(int startDateLoc){        
     int startDate_n_Loc = startDateLoc - n;
     for(int i=startDate_n_Loc;i<startDateLoc;i++){
         curPrice1 = table1->rows[i].close;
@@ -29,10 +46,11 @@ void Pairs::first(int startDateLoc){
         curSqSum += (curPrice1-curPrice2)*(curPrice1-curPrice2);
     }
 }
-void Pairs::writeCashFlow(chrono::year_month_day curDate){
+
+void PairsStopLoss::writeCashFlow(chrono::year_month_day curDate){
     flow.addRow(curDate,curBal);
 }
-void Pairs::writeFinalPNL(){
+void PairsStopLoss::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
@@ -41,9 +59,9 @@ void Pairs::writeFinalPNL(){
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;
-    pnlFile.close();    
+    pnlFile.close(); 
 }
-void Pairs::check(){
+void PairsStopLoss::check(){
     curMean = curSum/n;
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
@@ -58,9 +76,10 @@ void Pairs::check(){
         if(noShares < x){
             buy();
         }
-    }
-}
-void Pairs::squareOff(){
+    }    
+
+
+void PairsStopLoss::squareOff(){
     if(noShares > 0){
         curBal = curBal + noShares*(curPrice1-curPrice2);
         stats1.addRow(table1->rows.back().date,"SELL",noShares,curPrice1);
@@ -70,9 +89,10 @@ void Pairs::squareOff(){
         curBal = curBal + noShares*(curPrice1-curPrice2);
         stats1.addRow(table1->rows.back().date,"BUY",-noShares,curPrice1);
         stats2.addRow(table2->rows.back().date,"SELL",-noShares,curPrice2);
-    }     
+    } 
 }
-void Pairs::writeCSVfiles()
+
+void PairsStopLoss::writeCSVfiles()
 {
     string baseFilePath = "./bin/stockCSV/";
     string csv_cashflow = baseFilePath + "cashflow.csv";
@@ -82,7 +102,8 @@ void Pairs::writeCSVfiles()
     stats1.writeToCsv(csv_order_stats1);
     stats2.writeToCsv(csv_order_stats2);        
 }
-void Pairs::main(){
+
+void PairsStopLoss::main(){
     PriceTable createTable1 = getPriceTable(symbol1,modStartDate,endDate);        
     PriceTable createTable2 = getPriceTable(symbol2,modStartDate,endDate);
     table1 = &createTable1;
@@ -99,6 +120,7 @@ void Pairs::main(){
         cout << "start date not located in table for some reason" << endl;
     }
     first(startDateLoc);
+    //for handle stop loss threshold instead of just queue might have to keep a linked list here
     for(int i=startDateLoc;i<table1->rows.size();i++){
         curPrice1 = table1->rows[i].close;
         curPrice2 = table2->rows[i].close;
