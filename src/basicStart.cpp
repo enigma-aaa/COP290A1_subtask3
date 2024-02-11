@@ -61,6 +61,7 @@ void Basic::sell(chrono::year_month_day date){
 void Basic::squareOff(chrono::year_month_day date){
     curBal = curBal + noShares*curPrice;
     noShares = 0;
+    //do we need to write this to cashflow or to stats
 }
 void Basic::writeCashFlow(chrono::year_month_day date){
     flow.addRow(date,curBal);
@@ -85,37 +86,8 @@ void Basic::writeFinalPNL(){
 }
 void Basic::main(){
     PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
-    table = &createTable;
-    int tableSize = table->rows.size();
-    int startDateLoc = -1;
-    for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
-            startDateLoc = i;
-        }
-    }
-    if(startDateLoc == -1) { cout << "start date not located in the table for some reason" << endl;}
-    //cout << "startDateLoc is:" << startDateLoc << endl;
-
-    int startDate_n_Loc = startDateLoc - n;
-    //cout << "startDaten_Loc is:" << startDate_n_Loc << endl;
-    double firstprice = table->rows[startDate_n_Loc].close;
-    firstPrice(firstprice);
-
-    for(int i=startDate_n_Loc+1;i<table->rows.size();i++){
-        double newPrice = table->rows[i].close;
-        //cout << "Read newPrice" << endl;
-        chrono::year_month_day curDate = table->rows[i].date;
-        //cout << "read newDate" << endl;
-        nextPrice(newPrice,curDate);
-        //cout << "executed nexPrice" << endl;
-        writeCashFlow(curDate);
-        //cout << "exectuted writeCashFlow" << endl;
-        //cout << "currently noInc is:" << noIncDays << endl;
-        //cout << "currently noDec is:" << noDecDays << endl;
-        //cout << "Wrote cashflow for i=" << i << endl;
-    }
+    multiMain(&createTable);
     writeCSVfiles();
-    squareOff(table->rows.back().date);
     writeFinalPNL();
 }
 void Basic::multiMain(PriceTable* srcTable){
@@ -123,8 +95,9 @@ void Basic::multiMain(PriceTable* srcTable){
     int tableSize = table->rows.size();
     int startDateLoc = -1;
     for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
+        if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
+            break;
         }
     }
     if(startDateLoc == -1) { cout << "start date not located in the table for some reason" << endl;}

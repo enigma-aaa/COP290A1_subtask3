@@ -88,3 +88,11 @@ chrono::year_month_day min(std::vector<chrono::year_month_day> list){
     }
     return result;
 }
+
+bool grtrEqual(chrono::year_month_day a,chrono::year_month_day b){
+    chrono::time_point timePointA = chrono::sys_days{a};
+    chrono::time_point timePointB = chrono::sys_days{b};
+    time_t timeA = chrono::system_clock::to_time_t(timePointA);
+    time_t timeB = chrono::system_clock::to_time_t(timePointB);
+    return timeA >= timeB;    
+}
