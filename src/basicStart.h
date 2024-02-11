@@ -1,3 +1,4 @@
+#pragma once
 #include "dateUtil.h"
 #include <chrono>
 #include <sstream>
@@ -11,7 +12,7 @@ class Basic{
         chrono::year_month_day startDate,endDate,modStartDate;
         string symbolName;
 
-        PriceTable table;   
+        PriceTable* table;   
         CashFlow flow;
         OrderStats stats;
 
@@ -25,6 +26,7 @@ class Basic{
     Basic(int n,int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
     /*first price opver here is not the price at the start 
         date but price n days before the start date*/
+    Basic();
     void firstPrice(double orgPrice);
     void nextPrice(double newPrice,chrono::year_month_day newDate);
     void buy(chrono::year_month_day date);
@@ -35,4 +37,5 @@ class Basic{
     void writeCSVfiles();
     void writeFinalPNL();
     void main();
+    void multiMain(PriceTable* srcTable);
 };

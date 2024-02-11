@@ -1,10 +1,11 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <cmath>
 #include <iomanip>
 class LinearRegression{
 
-    public : 
+    public :
     chrono::year_month_day train_start_date , train_end_date , start_date , end_date ;
     double p ;
     int x ;
@@ -16,7 +17,7 @@ class LinearRegression{
     CashFlow flow ;
     OrderStats stats ;
 
-    int noShares ; 
+    int noShares ;
     double curBal ;
     double curPrice ;
     int curLoc ;

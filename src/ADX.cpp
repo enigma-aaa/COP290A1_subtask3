@@ -5,7 +5,9 @@ n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate),sym
     curBal = 0;
     modStartDate = subtractDate(startDate,2*n);
     alphaATR = 2.0/((double)(n+1));
+    table = nullptr;
 }
+ADXStrat::ADXStrat(){}
 void ADXStrat::buy(){
     noShares++;
     curBal = curBal - curPrice;
@@ -18,8 +20,8 @@ void ADXStrat::sell(){
 } 
 void ADXStrat::first(int startDateLoc){
     int startDate_n_Loc = startDateLoc -n;
-    PriceTableRow& curRow  = table.rows[startDateLoc];
-//    PriceTableRow& prevRow = table.rows[startDateLoc-1];
+    PriceTableRow& curRow  = table->rows[startDateLoc];
+//    PriceTableRow& prevRow = table->rows[startDateLoc-1];
     double a = curRow.high - curRow.low;
     double b = curRow.high - curRow.prevClose;
     double c = curRow.low - curRow.prevClose;
@@ -29,8 +31,8 @@ void ADXStrat::first(int startDateLoc){
     DIminus = 0;
     /*
     for(int i = startDate_n_Loc;i<startDateLoc;i++){
-        PriceTableRow& curRow = table.rows[i];
-        PriceTableRow& prevRow = table.rows[i-1];
+        PriceTableRow& curRow = table->rows[i];
+        PriceTableRow& prevRow = table->rows[i-1];
         curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
         DMplus = max(0.0,curRow.high - prevRow.high);
         DMminus = max(0.0,curRow.low - prevRow.low);
@@ -62,21 +64,25 @@ void ADXStrat::writeFinalPNL(){
 }
 void ADXStrat::check(){
     if(ADX > adx_threshold){
-        buy();
+        if(noShares < x){
+            buy();
+        }
     } 
     if(ADX < adx_threshold){
-        sell();
+        if(noShares > -x){
+            sell();
+        }
     }
 }
 void ADXStrat::squareOff(){
     if(noShares > 0){
         curBal = curBal + noShares * curPrice;
-        stats.addRow(table.rows.back().date,"SELL",noShares,curPrice);
+        stats.addRow(table->rows.back().date,"SELL",noShares,curPrice);
         noShares = 0;
     }
     if(noShares < 0){
         curBal = curBal + noShares * curPrice;
-        stats.addRow(table.rows.back().date,"BUY",noShares,curPrice);
+        stats.addRow(table->rows.back().date,"BUY",noShares,curPrice);
         noShares = 0;
     }
 }
@@ -98,11 +104,12 @@ double ADXStrat::max(double a,double b,double c){
     return max(max(a,b),c);
 }
 void ADXStrat::main(){
-    table = getPriceTable(symbolName,modStartDate,endDate);
+    PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
+    table = &createTable;
     curPrice = 0;
     int startDateLoc = -1;
-    for(int i=0;i<table.rows.size();i++){
-        if(table.rows[i].date == startDate){
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
             startDateLoc = i;
         }
     }
@@ -111,11 +118,11 @@ void ADXStrat::main(){
     }
     first(startDateLoc);
     //may have to change starting index to deal with threshold=0
-    for(int i=startDateLoc+1;i<table.rows.size();i++){
-        curPrice = table.rows[i].close;
-        curDate = table.rows[i].date;
-        PriceTableRow& curRow = table.rows[i];
-        PriceTableRow& prevRow = table.rows[i-1];
+    for(int i=startDateLoc+1;i<table->rows.size();i++){
+        curPrice = table->rows[i].close;
+        curDate = table->rows[i].date;
+        PriceTableRow& curRow = table->rows[i];
+        PriceTableRow& prevRow = table->rows[i-1];
         curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
         DMplus = max(0.0,curRow.high - prevRow.high);
         DMminus = max(0.0,curRow.low - prevRow.low);
@@ -132,4 +139,41 @@ void ADXStrat::main(){
     writeCSVfiles();
     squareOff();
     writeFinalPNL();
+}
+void ADXStrat::multiMain(PriceTable* srcTable){
+    //table = getPriceTable(symbolName,modStartDate,endDate);
+    table = srcTable;
+    curPrice = 0;
+    int startDateLoc = -1;
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
+            startDateLoc = i;
+        }
+    }
+    if(startDateLoc == -1){
+        cout << "start date not located in table for some reason" << endl;
+    }
+    first(startDateLoc);
+    //may have to change starting index to deal with threshold=0
+    for(int i=startDateLoc+1;i<table->rows.size();i++){
+        curPrice = table->rows[i].close;
+        curDate = table->rows[i].date;
+        PriceTableRow& curRow = table->rows[i];
+        PriceTableRow& prevRow = table->rows[i-1];
+        curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
+        DMplus = max(0.0,curRow.high - prevRow.high);
+        DMminus = max(0.0,curRow.low - prevRow.low);
+        ATR = alphaATR*(curTR - ATR) + ATR;
+        double DMplusByATR = DMplus/ATR;
+        double DMminusByATR = DMminus/ATR;
+        DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
+        DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
+        DX = ((DIplus - DIminus)*100)/(DIplus + DIminus);
+        ADX = alphaATR*(DX - ADX) + ADX;     
+        check();
+        writeCashFlow(curRow.date);
+    }
+    //writeCSVfiles();
+    squareOff();
+    //writeFinalPNL();
 }

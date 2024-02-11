@@ -1,4 +1,5 @@
 #include "dateUtil.h"
+#include <vector>
 
 PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chrono::year_month_day endDate){
     string command = "python3 ./src/stockData.py ";
@@ -59,4 +60,31 @@ chrono::year_month_day subtractDate(chrono::year_month_day date,int n){
     int month = local_tm.tm_mon + 1;
     int day = local_tm.tm_mday;
     return chrono::year_month_day(chrono::year(year),chrono::month(month),chrono::day(day));
+}
+
+void printDate(chrono::year_month_day date){
+    int year = int(date.year());
+    int month = unsigned(date.month());
+    int day = unsigned(date.day());
+    cout << year << "/" << month << "/" << day;
+}
+
+chrono::year_month_day min(chrono::year_month_day date1,chrono::year_month_day date2){
+    chrono::time_point timePoint1 = chrono::sys_days{date1};
+    chrono::time_point timePoint2 = chrono::sys_days{date2};
+    time_t time1 = chrono::system_clock::to_time_t(timePoint1);
+    time_t time2 = chrono::system_clock::to_time_t(timePoint2);
+    if(time1 < time2){
+        return date1;
+    }
+    return date2;
+}
+//Assum
+chrono::year_month_day min(std::vector<chrono::year_month_day> list){
+    if(list.size() == 1){return list[0];}
+    chrono::year_month_day result = min(list[0],list[1]);
+    for(int i=0;i<list.size();i++){
+        result = min(result,list[i]);
+    }
+    return result;
 }

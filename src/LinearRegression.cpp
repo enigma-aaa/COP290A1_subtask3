@@ -142,11 +142,11 @@ class LinearRegression{
     void main()
     {
         chrono:: year_month_day mod_start_date = subtractDate(start_date , 5) ;
-        table = getPriceTable(symbolName , mod_start_date , end_Date) ;
+        table = getPriceTable(symbolName , mod_start_date , end_date) ;
         int startDateLoc = -1 ;
         for(int i = 0 ; i<table.rows.size() ; i++)
         {
-            if(table.rows[i].date = start_date)
+            if(table.rows[i].date == start_date)
             {
                 startDateLoc = i ;
             }

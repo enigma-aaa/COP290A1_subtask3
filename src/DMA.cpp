@@ -4,8 +4,9 @@ n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
 {
     modStartDate = subtractDate(startDate, 2 * n);
     noShares = 0 ;
+    table = nullptr;
 }
-
+DMA::DMA() {}
 void DMA::buy(chrono :: year_month_day date)
 {
     noShares++ ;
@@ -23,9 +24,9 @@ void DMA::writeCashFlow(chrono::year_month_day curDate){
 }
 void DMA::check()
 {
-    curSum = curSum -table.rows[curLoc-n].close + curPrice ;
+    curSum = curSum -table->rows[curLoc-n].close + curPrice ;
     
-    cursquaredSum = cursquaredSum - (table.rows[curLoc-n].close)*(table.rows[curLoc-n].close) + curPrice * curPrice ;
+    cursquaredSum = cursquaredSum - (table->rows[curLoc-n].close)*(table->rows[curLoc-n].close) + curPrice * curPrice ;
     double sd = sqrt(cursquaredSum/n - ((curSum * curSum)/(n*n))) ;
     double curMean = curSum/n ;
 
@@ -36,7 +37,7 @@ void DMA::check()
         //buy
         if(noShares<x)
         {
-            buy(table.rows[curLoc].date) ;
+            buy(table->rows[curLoc].date) ;
         }
     }
     else if(curPrice <= curMean-p*sd)
@@ -44,7 +45,7 @@ void DMA::check()
         //sell
         if(noShares > -1*x )
         {
-            sell(table.rows[curLoc].date) ;
+            sell(table->rows[curLoc].date) ;
         }
         
     }
@@ -54,7 +55,7 @@ void DMA::check()
 
 void DMA::squareOff()
 {
-    curBal  = curBal + noShares * table.rows[table.rows.size()-1].close ; 
+    curBal  = curBal + noShares * table->rows[table->rows.size()-1].close ; 
     noShares = 0 ;
 }
 void DMA::writeCSVfiles()
@@ -78,13 +79,14 @@ void DMA::writeFinalPNL(){
 }
 void DMA::main()
 {
-    table = getPriceTable(symbolName, modStartDate, endDate);
-    int tableSize = table.rows.size();
+    PriceTable createTable = getPriceTable(symbolName, modStartDate, endDate);
+    table = &createTable;
+    int tableSize = table->rows.size();
     int startDateLoc = -1;
     curPrice = 0 ;
-    for (int i = 0; i < table.rows.size(); i++)
+    for (int i = 0; i < table->rows.size(); i++)
     {
-        if (table.rows[i].date == startDate)
+        if (table->rows[i].date == startDate)
         {
             startDateLoc = i;
         }
@@ -99,18 +101,57 @@ void DMA::main()
     cursquaredSum = 0;
     for(int i = startDate_n_Loc ; i<startDate_n_Loc+n ; i++)
     {
-        curSum +=  table.rows[i].close ;
-        cursquaredSum += table.rows[i].close * table.rows[i].close;
+        curSum +=  table->rows[i].close ;
+        cursquaredSum += table->rows[i].close * table->rows[i].close;
     }   
 
-    for(int i = startDateLoc ; i<  table.rows.size() ; i++)
+    for(int i = startDateLoc ; i<  table->rows.size() ; i++)
     {
-        curPrice = table.rows[i].close ;
+        curPrice = table->rows[i].close ;
         curLoc = i;
         check() ;
-        writeCashFlow(table.rows[i].date);
+        writeCashFlow(table->rows[i].date);
     }
     squareOff() ;
     writeCSVfiles();
     writeFinalPNL();
+}
+void DMA::multiMain(PriceTable* srcTable)
+{
+    curBal = 0;
+    table = srcTable;
+    int tableSize = table->rows.size();
+    int startDateLoc = -1;
+    curPrice = 0 ;
+    for (int i = 0; i < table->rows.size(); i++)
+    {
+        if (table->rows[i].date == startDate)
+        {
+            startDateLoc = i;
+        }
+    }
+    if (startDateLoc == -1)
+    {
+        cout << "start date not located in the table for some reason" << endl;
+    }
+    /*Have to ask sir since current day has to be included might have to do n-1 here*/
+    int startDate_n_Loc = startDateLoc - n;
+    curSum = 0 ;
+    cursquaredSum = 0;
+    for(int i = startDate_n_Loc ; i<startDate_n_Loc+n ; i++)
+    {
+        curSum +=  table->rows[i].close ;
+        cursquaredSum += table->rows[i].close * table->rows[i].close;
+    }   
+
+    for(int i = startDateLoc ; i<  table->rows.size() ; i++)
+    {
+        curPrice = table->rows[i].close ;
+        curLoc = i;
+        check() ;
+        writeCashFlow(table->rows[i].date);
+    }
+    squareOff() ;
+    //writeCSVfiles();
+    //writeFinalPNL();
 }

@@ -3,8 +3,9 @@
 Basic::Basic(int n,int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName):
 n(n),x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
     modStartDate = subtractDate(startDate,2*n);
-    
+    table = nullptr;
 }
+Basic::Basic(){}
 /*first price opver here is not the price at the start 
     date but price n days before the start date*/
 void Basic::firstPrice(double orgPrice){
@@ -83,11 +84,12 @@ void Basic::writeFinalPNL(){
     pnlFile.close();
 }
 void Basic::main(){
-    table = getPriceTable(symbolName,modStartDate,endDate);
-    int tableSize = table.rows.size();
+    PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
+    table = &createTable;
+    int tableSize = table->rows.size();
     int startDateLoc = -1;
-    for(int i=0;i<table.rows.size();i++){
-        if(table.rows[i].date == startDate){
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
             startDateLoc = i;
         }
     }
@@ -96,13 +98,13 @@ void Basic::main(){
 
     int startDate_n_Loc = startDateLoc - n;
     //cout << "startDaten_Loc is:" << startDate_n_Loc << endl;
-    double firstprice = table.rows[startDate_n_Loc].close;
+    double firstprice = table->rows[startDate_n_Loc].close;
     firstPrice(firstprice);
 
-    for(int i=startDate_n_Loc+1;i<table.rows.size();i++){
-        double newPrice = table.rows[i].close;
+    for(int i=startDate_n_Loc+1;i<table->rows.size();i++){
+        double newPrice = table->rows[i].close;
         //cout << "Read newPrice" << endl;
-        chrono::year_month_day curDate = table.rows[i].date;
+        chrono::year_month_day curDate = table->rows[i].date;
         //cout << "read newDate" << endl;
         nextPrice(newPrice,curDate);
         //cout << "executed nexPrice" << endl;
@@ -113,6 +115,40 @@ void Basic::main(){
         //cout << "Wrote cashflow for i=" << i << endl;
     }
     writeCSVfiles();
-    squareOff(table.rows.back().date);
+    squareOff(table->rows.back().date);
     writeFinalPNL();
+}
+void Basic::multiMain(PriceTable* srcTable){
+    table = srcTable;
+    int tableSize = table->rows.size();
+    int startDateLoc = -1;
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
+            startDateLoc = i;
+        }
+    }
+    if(startDateLoc == -1) { cout << "start date not located in the table for some reason" << endl;}
+    //cout << "startDateLoc is:" << startDateLoc << endl;
+
+    int startDate_n_Loc = startDateLoc - n;
+    //cout << "startDaten_Loc is:" << startDate_n_Loc << endl;
+    double firstprice = table->rows[startDate_n_Loc].close;
+    firstPrice(firstprice);
+
+    for(int i=startDate_n_Loc+1;i<table->rows.size();i++){
+        double newPrice = table->rows[i].close;
+        //cout << "Read newPrice" << endl;
+        chrono::year_month_day curDate = table->rows[i].date;
+        //cout << "read newDate" << endl;
+        nextPrice(newPrice,curDate);
+        //cout << "executed nexPrice" << endl;
+        writeCashFlow(curDate);
+        //cout << "exectuted writeCashFlow" << endl;
+        //cout << "currently noInc is:" << noIncDays << endl;
+        //cout << "currently noDec is:" << noDecDays << endl;
+        //cout << "Wrote cashflow for i=" << i << endl;
+    }
+    //writeCSVfiles();
+    squareOff(table->rows.back().date);
+    //writeFinalPNL();
 }

@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <cmath>
@@ -19,7 +20,7 @@ public:
     chrono::year_month_day startDate,endDate,modStartDate;    
     string symbolName;
 
-    PriceTable table;
+    PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
@@ -28,6 +29,7 @@ public:
     double curBal;
     int noShares;
     MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
+    MACDStrat();
     void buy();
     void sell();
     void check();
@@ -37,4 +39,5 @@ public:
     void writeCSVfiles();
     void writeFinalPNL();
     void main();
+    void multiMain(PriceTable* srcTable);
 };

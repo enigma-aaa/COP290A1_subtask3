@@ -1,3 +1,4 @@
+#pragma once
 #include "parser.h"
 #include "dateUtil.h"
 #include <iomanip>
@@ -15,7 +16,7 @@ public:
 
     chrono::year_month_day curDate;
 
-    PriceTable table;
+    PriceTable* table;
     CashFlow flow;
     OrderStats stats;
 
@@ -25,6 +26,7 @@ public:
     double curBal;
 
     RSI(int n,int x,double oversold_threshold,double overbought_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
+    RSI();
     void buy();
     void sell();   
     void writeCashFlow();
@@ -33,5 +35,6 @@ public:
     void writeCSVfiles();
     void writeFinalPNL();
     void main();
+    void multiMain(PriceTable* srcTable);
     void squareOff();
 };

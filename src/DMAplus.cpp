@@ -7,20 +7,21 @@ chrono::year_month_day endDate,string symbolName)
     cout << "constructed object with" << endl;
     cout << "n is:" << n << " x is:" << x << " p is:" << p << " max_hold_days:" << max_hold_days << " c1:" << c1 << " c2:" << c2 << endl;
     modStartDate = subtractDate(startDate,2*n);
+    table = nullptr;
 }
-
+DMAPlus::DMAPlus() {}
 //first+n is the index of the start function
 void DMAPlus::firstPrice(int first){
     curAbsoluteSum = 0;
     curBal = 0;
     for(int i=first;i<n+first;i++){            
-        double curDiff = abs(table.rows[i].close - table.rows[i+1].close);
+        double curDiff = abs(table->rows[i].close - table->rows[i+1].close);
         curAbsoluteSum += curDiff;    
     }
-    //priceChange_n = table.rows[first+n] - table.rows[first];
+    //priceChange_n = table->rows[first+n] - table->rows[first];
     //not needed here handeled in the loop
     smoothingFactor = 0.5;
-    AMA = table.rows[first+n].close;
+    AMA = table->rows[first+n].close;
     noShares = 0;
     //cannot call check here as check also updates the values involved probably 
     //not needed here either as difference between AMA and price is zero
@@ -115,11 +116,12 @@ void DMAPlus::writeFinalPNL(){
     pnlFile.close();
 }
 void DMAPlus::main(){
-    table = getPriceTable(symbolName,modStartDate,endDate);
-    int tableSize = table.rows.size();
+    PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
+    table = &createTable;
+    int tableSize = table->rows.size();
     int startDateLoc = -1;
-    for(int i=0;i<table.rows.size();i++){
-        if(table.rows[i].date == startDate){
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
             startDateLoc = i;
         }
     }
@@ -130,13 +132,13 @@ void DMAPlus::main(){
     //add a check to first price
     firstPrice(startDate_n_Loc);
 
-    for(int i=startDateLoc;i<table.rows.size()-1;i++){
-        curPrice = table.rows[i].close;
-        priceChange_n = table.rows[i].close - table.rows[i-n].close;
-        curDate = table.rows[i].date;
+    for(int i=startDateLoc;i<table->rows.size()-1;i++){
+        curPrice = table->rows[i].close;
+        priceChange_n = table->rows[i].close - table->rows[i-n].close;
+        curDate = table->rows[i].date;
         //definetly have to crosscheck these indices
-        double oldAbsDiff = abs(table.rows[i-n].close-table.rows[i-n+1].close);
-        double newAbsDiff = abs(table.rows[i+1].close-table.rows[i].close);
+        double oldAbsDiff = abs(table->rows[i-n].close-table->rows[i-n+1].close);
+        double newAbsDiff = abs(table->rows[i+1].close-table->rows[i].close);
         curAbsoluteSum = curAbsoluteSum - oldAbsDiff + newAbsDiff;
         ER = priceChange_n/curAbsoluteSum;
         double factorNum = 2*ER/(1+c2) - 1;
@@ -147,21 +149,60 @@ void DMAPlus::main(){
         check();
         handleMaxHold();
         writeCashFlow();
-        cout << "i is:" << i << " curBal is:" << curBal  << endl;
+        //cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     writeCSVfiles();
     squareOff();
     writeFinalPNL();
 }
+void DMAPlus::multiMain(PriceTable* srcTable){
+    table = srcTable;
+    int tableSize = table->rows.size();
+    int startDateLoc = -1;
+    for(int i=0;i<table->rows.size();i++){
+        if(table->rows[i].date == startDate){
+            startDateLoc = i;
+        }
+    }
+    cout << "startDateLoc is:" << startDateLoc << endl;
+    if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
+
+    int startDate_n_Loc = startDateLoc - n;
+    //add a check to first price
+    firstPrice(startDate_n_Loc);
+
+    for(int i=startDateLoc;i<table->rows.size()-1;i++){
+        curPrice = table->rows[i].close;
+        priceChange_n = table->rows[i].close - table->rows[i-n].close;
+        curDate = table->rows[i].date;
+        //definetly have to crosscheck these indices
+        double oldAbsDiff = abs(table->rows[i-n].close-table->rows[i-n+1].close);
+        double newAbsDiff = abs(table->rows[i+1].close-table->rows[i].close);
+        curAbsoluteSum = curAbsoluteSum - oldAbsDiff + newAbsDiff;
+        ER = priceChange_n/curAbsoluteSum;
+        double factorNum = 2*ER/(1+c2) - 1;
+        double factorDenom = 2*ER/(1+c2) + 1;
+        double factor = factorNum/factorDenom;
+        smoothingFactor = smoothingFactor + c1 * (factor - smoothingFactor);
+        AMA = AMA + smoothingFactor*(curPrice - AMA);
+        check();
+        handleMaxHold();
+        writeCashFlow();
+        //cout << "i is:" << i << " curBal is:" << curBal  << endl;
+    }
+    //writeCSVfiles();
+    squareOff();
+    //writeFinalPNL();
+}
 void DMAPlus::squareOff(){
     if(noShares > 0){
-        curBal = curBal + noShares * table.rows.back().close;
+        curBal = curBal + noShares * table->rows.back().close;
         noShares = 0;
         //if correctly understood only have to clear this
         while(!sellDates.empty()){ sellDates.pop(); }
     }
     if(noShares < 0){
-        curBal = curBal + noShares * table.rows.back().close;
+        curBal = curBal + noShares * table->rows.back().close;
         noShares = 0;
         while(!buyDates.empty()){ buyDates.pop(); }
     }
