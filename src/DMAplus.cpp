@@ -177,9 +177,9 @@ void DMAPlus::multiMain(PriceTable* srcTable){
             stats.addRow(curDate,"SELL",-shareDelta,curPrice);
         }
         writeCashFlow();
-        //cout << "AMA: " << AMA << " curDate "; printDate(curDate);
-        //cout << " noShares: " << noShares << "smoothing factor: " << smoothingFactor << " curPrice: " << curPrice << " factor: " << factor << endl;
-        //cout << "i is:" << i << " curBal is:" << curBal  << endl;
+        cout << "AMA: " << AMA << " curDate "; printDate(curDate);
+        cout << " noShares: " << noShares << "smoothing factor: " << smoothingFactor << " curPrice: " << curPrice << " factor: " << factor << endl;
+        cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     squareOff();
 }

@@ -4,7 +4,7 @@ chrono::year_month_day startDate,
 chrono::year_month_day endDate,string symbol1,
 string symbol2):x(x),n(n),threshold(threshold),startDate(startDate),
 endDate(endDate),symbol1(symbol1),symbol2(symbol2){
-    modStartDate = subtractDate(startDate,2*n);
+    modStartDate = subtractDate(startDate,max(2*n,30));
     cout << "called pairs constructor" << endl;
 }
 
@@ -104,6 +104,7 @@ void Pairs::main(){
         curPrice1 = table1->rows[i].close;
         curPrice2 = table2->rows[i].close;
         //assuming current rows same in both
+        curSpread = curPrice1 - curPrice2;
         curDate = table1->rows[i].date;
         double oldPrice1 = table1->rows[i-n].close;
         double oldPrice2 = table2->rows[i-n].close;
