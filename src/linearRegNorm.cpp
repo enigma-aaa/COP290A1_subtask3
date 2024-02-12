@@ -190,14 +190,12 @@ void LinearRegression::buy()
     noShares++;
     curBal = curBal - curPrice;
     stats.addRow(table->rows[curLoc].date, "BUY", noShares, curPrice);
-    flow.addRow(table->rows[curLoc].date, curBal);
 }
 void LinearRegression::sell()
 {
     noShares--;
     curBal = curBal + curPrice;
     stats.addRow(table->rows[curLoc].date, "SELL", noShares, curPrice);
-    flow.addRow(table->rows[curLoc].date, curBal);
 }
 
 void LinearRegression::check()
@@ -243,16 +241,6 @@ void LinearRegression::writeFinalPNL(){
 void LinearRegression::squareOff()
 {
     curBal = curBal + noShares * table->rows.back().close;
-    if (noShares > 0)
-    {
-        stats.addRow(table->rows.back().date, "SELL", noShares, curPrice);
-        flow.addRow(table->rows.back().date, curBal);
-    }
-    if (noShares < 0)
-    {
-        stats.addRow(table->rows.back().date, "BUY", noShares, curPrice);
-        flow.addRow(table->rows.back().date, curBal);
-    }
     noShares = 0;
 }
 void LinearRegression::main()
@@ -286,6 +274,7 @@ void LinearRegression::multiMain(PriceTable* srcTable){
         curPrice = table->rows[i].close;
         curLoc = i;
         check();
+        flow.addRow(table->rows[curLoc].date, curBal);
     }
     squareOff();
 }
