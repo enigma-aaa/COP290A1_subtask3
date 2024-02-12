@@ -38,14 +38,13 @@ void RSI::check()
 {
     double RS = curGainSum/curLossSum;
     double RSI = 100 - 100/(1+RS);
-    //cout << "RSI is:" << RSI << endl;
     if(RSI < oversold_threshold){
         if(noShares < x){
             buy();
         }
     }
     if(RSI > overbought_threshold){
-        if(noShares > x){
+        if(noShares > -x){
             sell();
         }
     }
@@ -104,8 +103,8 @@ void RSI::multiMain(PriceTable* srcTable)
         double curLoss   = max(table->rows[i-1].close   - table->rows[i].close,0.0);
         curGainSum = curGainSum - oldProfit + curProfit;
         curLossSum = curLossSum - oldLoss + curLoss;
+        //cout << " curGainSum:" << curGainSum/n << " curLossSum:" << curLossSum/n;
         check();
-        //cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
         writeCashFlow();            
     }        
     //writeCSVfiles();
