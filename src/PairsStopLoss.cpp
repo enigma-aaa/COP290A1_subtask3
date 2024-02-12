@@ -12,33 +12,37 @@ endDate(endDate),symbol1(symbol1),symbol2(symbol2){
 void PairsStopLoss::buy(){
     noShares++;
     curBal = curBal - curPrice1 + curPrice2;
-    if(!sellMean.empty()){
-        sellMean.pop(); 
-        sellStandDev.pop();
-    }else{
-        buyMean.push(curMean);
-        buyStandDev.push(curDev);
-    }
-    stats1.addRow(curDate,"BUY",1,curPrice1);
-    stats2.addRow(curDate,"SELL",1,curPrice2);
+    // if(!sellMean.empty()){
+    //     sellMean.pop(); 
+    //     sellStandDev.pop();
+    // }else{
+    //     buyMean.push(curMean);
+    //     buyStandDev.push(curDev);
+    // }
+    // stats1.addRow(curDate,"BUY",1,curPrice1);
+    // stats2.addRow(curDate,"SELL",1,curPrice2);
+    Node temp = Node(curLoc , curMean , curDev , stop_loss_threshold) ;
+    myPortfolio.addToTail(temp) ;
 }
 
 void PairsStopLoss::sell(){
     noShares--;
     curBal = curBal + curPrice1 - curPrice2;
-    if(!buyMean.empty()){
-        buyMean.pop();
-        buyStandDev.pop();
-    }else{
-        sellMean.push(curMean);
-        sellStandDev.push(curDev);
-    }
-    stats1.addRow(curDate,"SELL",1,curPrice1);
-    stats2.addRow(curDate,"BUY",1,curPrice2);
+    // if(!buyMean.empty()){
+    //     buyMean.pop();
+    //     buyStandDev.pop();
+    // }else{
+    //     sellMean.push(curMean);
+    //     sellStandDev.push(curDev);
+    // }
+    // stats1.addRow(curDate,"SELL",1,curPrice1);
+    // stats2.addRow(curDate,"BUY",1,curPrice2);
+    myPortfolio.removeHead() ;
 }
 
 void PairsStopLoss::first(int startDateLoc){        
     int startDate_n_Loc = startDateLoc - n;
+    curLoc = startDateLoc ;
     for(int i=startDate_n_Loc;i<startDateLoc;i++){
         curPrice1 = table1->rows[i].close;
         curPrice2 = table2->rows[i].close;
@@ -61,7 +65,7 @@ void PairsStopLoss::writeFinalPNL(){
     pnlFile << curBalStr;
     pnlFile.close(); 
 }
-void PairsStopLoss::check(){
+int PairsStopLoss::check(){
     curMean = curSum/n;
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
@@ -69,27 +73,69 @@ void PairsStopLoss::check(){
     cout << "zScore is:" << curZscore << endl;
     if(curZscore > threshold){
         if(noShares > -x){
-            sell();
+            sell() ;
+            return -1 ;       
         }
     }
     if(curZscore < -threshold){
         if(noShares < x){
-            buy();
+            buy() ;
+            return 1 ;
         }
     }    
+    return 0 ;
+}
 
+int PairsStopLoss:: checkForThresholds()
+{
+    Node* temp = myPortfolio.head ;
+    int stocksCrossed = 0 ;
+    while(temp != NULL)
+    {
+        if(curSpread >= temp->condition1)
+        {
+            stocksCrossed++;
+            
+            if(temp->prev == NULL)
+            {
+                myPortfolio.head = temp->next ;
+                temp = myPortfolio.head ;
+            }
+            else
+            {
+                temp->prev->next = temp->next ;
+                temp = temp->next ;
+            }
+            noShares-- ;
+
+        }
+        else if(curSpread <= temp->condition2)
+        {
+            stocksCrossed--;
+            noShares++ ;
+            if(temp->prev == NULL)
+            {
+                myPortfolio.head = temp->next ;
+                temp = myPortfolio.head ;
+            }
+            else
+            {
+                temp->prev->next = temp->next ;
+                temp->next->prev = temp->prev ;
+                temp = temp->next ;
+            
+            }
+        }
+        else
+        {
+            temp = temp->next; 
+        }
+    }
+    return stocksCrossed ;
+}
 
 void PairsStopLoss::squareOff(){
-    if(noShares > 0){
-        curBal = curBal + noShares*(curPrice1-curPrice2);
-        stats1.addRow(table1->rows.back().date,"SELL",noShares,curPrice1);
-        stats2.addRow(table2->rows.back().date,"BUY",noShares,curPrice2);            
-    }   
-    if(noShares < 0){
-        curBal = curBal + noShares*(curPrice1-curPrice2);
-        stats1.addRow(table1->rows.back().date,"BUY",-noShares,curPrice1);
-        stats2.addRow(table2->rows.back().date,"SELL",-noShares,curPrice2);
-    } 
+    curBal = curBal + noShares*(curPrice1-curPrice2);
 }
 
 void PairsStopLoss::writeCSVfiles()
@@ -112,8 +158,9 @@ void PairsStopLoss::main(){
     curPrice2 = 0;
     int startDateLoc = -1;
     for(int i=0;i<table1->rows.size();i++){
-        if(table1->rows[i].date == startDate){
+        if(grtrEqual(table1->rows[i].date,startDate)){
             startDateLoc = i;
+            break;
         }
     }
     if(startDateLoc == -1){
@@ -122,15 +169,29 @@ void PairsStopLoss::main(){
     first(startDateLoc);
     //for handle stop loss threshold instead of just queue might have to keep a linked list here
     for(int i=startDateLoc;i<table1->rows.size();i++){
+        curLoc = i ;
         curPrice1 = table1->rows[i].close;
         curPrice2 = table2->rows[i].close;
+        curSpread = curPrice1 - curPrice2 ;
         //assuming current rows same in both
         curDate = table1->rows[i].date;
         double oldPrice1 = table1->rows[i-n].close;
         double oldPrice2 = table2->rows[i-n].close;
         curSum = curSum - (oldPrice1 - oldPrice2) + (curPrice1 - curPrice2);
         curSqSum = curSqSum - (oldPrice1 - oldPrice2)*(oldPrice1-oldPrice2) + (curPrice1 - curPrice2)*(curPrice1-curPrice2);
-        check();
+        int strategyResultToday = check();
+        int noCrossingThresholds = checkForThresholds();
+        int totalChangeinStocks = strategyResultToday + noCrossingThresholds ;
+        if(totalChangeinStocks > 0)
+        {
+            stats1.addRow(curDate,"BUY",totalChangeinStocks,curPrice1);         
+            stats2.addRow(curDate,"SELL",totalChangeinStocks,curPrice1);         
+        }
+        else if(totalChangeinStocks < 0)
+        {
+            stats1.addRow(curDate,"SELL",-totalChangeinStocks,curPrice1);         
+            stats2.addRow(curDate,"BUY",-totalChangeinStocks,curPrice1);         
+        }
         writeCashFlow(curDate);
     }
     writeCSVfiles();
