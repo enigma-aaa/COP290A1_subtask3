@@ -4,8 +4,8 @@ DMAPlus::DMAPlus(int n,int x,double p,int max_hold_days,
 double c1,double c2,chrono::year_month_day startDate,
 chrono::year_month_day endDate,string symbolName)
 :n(n),x(x),p(p),max_hold_days(max_hold_days),c1(c1),c2(c2),symbolName(symbolName),startDate(startDate),endDate(endDate){
-    cout << "constructed object with" << endl;
-    cout << "n is:" << n << " x is:" << x << " p is:" << p << " max_hold_days:" << max_hold_days << " c1:" << c1 << " c2:" << c2 << endl;
+    //cout << "constructed object with" << endl;
+    //cout << "n is:" << n << " x is:" << x << " p is:" << p << " max_hold_days:" << max_hold_days << " c1:" << c1 << " c2:" << c2 << endl;
     modStartDate = subtractDate(startDate,max(2*n,30));
     table = nullptr;
 }
@@ -139,7 +139,6 @@ void DMAPlus::multiMain(PriceTable* srcTable){
     for(int i=0;i<table->rows.size();i++){
         if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
-            cout << "startDateLOc is:" << startDateLoc << endl;
             break;
         }
     }
@@ -148,7 +147,7 @@ void DMAPlus::multiMain(PriceTable* srcTable){
     int startDate_n_Loc = startDateLoc - n;
     //add a check to first price
     firstPrice(startDate_n_Loc);
-    cout << "Initial AMA is:" << AMA <<" smoothing:factor" << smoothingFactor<< endl;
+    //cout << "Initial AMA is:" << AMA <<" smoothing:factor" << smoothingFactor<< endl;
     for(int i=startDateLoc+1;i<table->rows.size();i++){
         curLoc = i;
         curPrice = table->rows[i].close;
@@ -167,7 +166,7 @@ void DMAPlus::multiMain(PriceTable* srcTable){
         double factor = factorNum/factorDenom;
         smoothingFactor = smoothingFactor + c1 * (factor - smoothingFactor);
         double temp = AMA + smoothingFactor*(curPrice - AMA);
-        cout<<"temp : "<<temp<<endl;
+        //cout<<"temp : "<<temp<<endl;
         AMA = temp ;
         int shareDelta1 =  check();
         int shareDelta2 = handleMaxHold();
@@ -178,8 +177,8 @@ void DMAPlus::multiMain(PriceTable* srcTable){
             stats.addRow(curDate,"SELL",-shareDelta,curPrice);
         }
         writeCashFlow();
-        cout << "AMA: " << AMA << " curDate "; printDate(curDate);
-        cout << " noShares: " << noShares << "smoothing factor: " << smoothingFactor << " curPrice: " << curPrice << " factor: " << factor << endl;
+        //cout << "AMA: " << AMA << " curDate "; printDate(curDate);
+        //cout << " noShares: " << noShares << "smoothing factor: " << smoothingFactor << " curPrice: " << curPrice << " factor: " << factor << endl;
         //cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     squareOff();

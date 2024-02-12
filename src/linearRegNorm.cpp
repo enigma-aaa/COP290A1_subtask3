@@ -108,7 +108,7 @@ void LinearRegression::fit()
 
     for(int i = 0 ; i<train_table.rows.size() ; i++)
     {
-        if(grtrEqual(table->rows[i].date,train_start_date)){
+        if(grtrEqual(train_table.rows[i].date,train_start_date)){
             startLoc = i;
             cout << "startDateLOc is:" << startLoc << endl;
             break;
@@ -264,25 +264,7 @@ void LinearRegression::main()
     }
     cout<<endl;
     PriceTable createTable = getPriceTable(symbolName, mod_start_date, end_date);
-    table = &createTable;
-
-    int startDateLoc = -1;
-    for (int i = 0; i < table->rows.size(); i++)
-    {
-        if(grtrEqual(table->rows[i].date,start_date)){
-            startDateLoc = i;
-            break;
-        }
-    }
-
-    for (int i = startDateLoc; i < table->rows.size(); i++)
-    {
-        curPrice = table->rows[i].close;
-        curLoc = i;
-        check();
-        
-    }
-    squareOff();
+    multiMain(&createTable);
     writeCSVfiles() ;
     writeFinalPNL();
 }
@@ -293,9 +275,9 @@ void LinearRegression::multiMain(PriceTable* srcTable){
     int startDateLoc = -1;
     for (int i = 0; i < table->rows.size(); i++)
     {
-        if (table->rows[i].date == start_date)
-        {
+        if(grtrEqual(table->rows[i].date,start_date)){
             startDateLoc = i;
+            break;
         }
     }
 

@@ -71,34 +71,8 @@ void RSI::writeFinalPNL(){
 void RSI::main()
 {
     PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
-    table = &createTable;
-    int tableSize = table->rows.size();
-    int startDateLoc = -1;
-    for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
-            startDateLoc = i;
-        }
-    }
-    if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
-
-    firstPrice(startDateLoc);
-    for(int i=startDateLoc;i<table->rows.size();i++){
-        curDate = table->rows[i].date;
-        curPrice = table->rows[i].close;
-        //cout << "curDate:" << int(curDate.year()) << "/" << unsigned(curDate.month()) << "/" << unsigned(curDate.day()) << " ";
-        double oldProfit = max(table->rows[i-n].close   - table->rows[i-n-1].close,0.0);
-        double curProfit = max(table->rows[i].close     - table->rows[i-1].close,0.0);
-
-        double oldLoss   = max(table->rows[i-n-1].close - table->rows[i-n].close,0.0);
-        double curLoss   = max(table->rows[i-1].close   - table->rows[i].close,0.0);
-        curGainSum = curGainSum - oldProfit + curProfit;
-        curLossSum = curLossSum - oldLoss + curLoss;
-        check();
-        //cout << " curGainSum:" << curGainSum << " curLossSum:" << curLossSum << endl;
-        writeCashFlow();            
-    }        
+    multiMain(&createTable);
     writeCSVfiles();
-    squareOff();
     writeFinalPNL();
 }
 void RSI::squareOff(){
@@ -111,8 +85,9 @@ void RSI::multiMain(PriceTable* srcTable)
     int tableSize = table->rows.size();
     int startDateLoc = -1;
     for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
+        if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
+            break;
         }
     }
     if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}

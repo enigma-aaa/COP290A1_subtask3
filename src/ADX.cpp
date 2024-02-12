@@ -105,53 +105,8 @@ double ADXStrat::max(double a,double b,double c){
 }
 void ADXStrat::main(){
     PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
-    table = &createTable;
-    curPrice = 0;
-    int startDateLoc = -1;
-    for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
-            startDateLoc = i;
-        }
-    }
-    if(startDateLoc == -1){
-        cout << "start date not located in table for some reason" << endl;
-    }
-    first(startDateLoc);
-    //may have to change starting index to deal with threshold=0
-    for(int i=startDateLoc+1;i<table->rows.size();i++){
-        curPrice = table->rows[i].close;
-        curDate = table->rows[i].date;
-        PriceTableRow& curRow = table->rows[i];
-        PriceTableRow& prevRow = table->rows[i-1];
-        curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
-        DMplus = max(0.0,curRow.high - prevRow.high);
-        DMminus = max(0.0,curRow.low - prevRow.low);
-        ATR = alphaATR*(curTR - ATR) + ATR;
-        double DMplusByATR,DMminusByATR;
-        
-        if(ATR != 0){
-            DMplusByATR = DMplus/ATR;
-            DMminusByATR = DMminus/ATR;
-        }else{
-            DMplusByATR = 0;
-            DMminusByATR = 0;
-        }
-        DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
-        DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
-        double sum = DIplus + DIminus;
-        if(sum != 0){
-            DX = ((DIplus - DIminus)*100)/sum;
-        }else{
-            DX = 0;
-        }
-        ADX = alphaATR*(DX - ADX) + ADX;     
-        ADX = 0;
-        check();
-        //printDate(curDate); cout << " ADX:" << ADX << endl;
-        writeCashFlow(curRow.date);
-    }
+    multiMain(&createTable);
     writeCSVfiles();
-    squareOff();
     writeFinalPNL();
 }
 void ADXStrat::multiMain(PriceTable* srcTable){
@@ -160,8 +115,9 @@ void ADXStrat::multiMain(PriceTable* srcTable){
     curPrice = 0;
     int startDateLoc = -1;
     for(int i=0;i<table->rows.size();i++){
-        if(table->rows[i].date == startDate){
+        if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
+            break;
         }
     }
     if(startDateLoc == -1){

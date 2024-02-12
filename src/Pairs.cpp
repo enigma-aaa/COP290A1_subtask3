@@ -48,7 +48,7 @@ void Pairs::check(){
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
     curZscore = (curSpread - curMean)/curDev;
-    cout << "zScore is:" << curZscore << endl;
+    //cout << "zScore is:" << curZscore << endl;
     if(curZscore > threshold){
         if(noShares > -x){
             sell();
@@ -91,8 +91,9 @@ void Pairs::main(){
     curPrice2 = 0;
     int startDateLoc = -1;
     for(int i=0;i<table1->rows.size();i++){
-        if(table1->rows[i].date == startDate){
+        if(grtrEqual(table1->rows[i].date,startDate)){
             startDateLoc = i;
+            break;
         }
     }
     if(startDateLoc == -1){
