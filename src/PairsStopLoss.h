@@ -22,7 +22,9 @@ public:
     OrderStats stats2;
     queue<double> buyMean,buyStandDev;
     queue<double> sellMean,sellStandDev;
-
+    priority_queue<double> maxHeap ;
+    priority_queue<double,vector<double>,greater<double>> minHeap ;
+    
     chrono::year_month_day curDate;
     PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
     chrono::year_month_day startDate,chrono::year_month_day endDate,string symbol1,string symbol2);
@@ -36,6 +38,8 @@ public:
     double curBal = 0;
     double curZscore = 0;
 
+    
+    
     void buy();
     void sell();
     void first(int startDateLoc);

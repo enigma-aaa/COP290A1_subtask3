@@ -1,5 +1,5 @@
 #include "PairsStopLoss.h"
-
+#include <queue>
 PairsStopLoss::PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
 chrono::year_month_day startDate,
 chrono::year_month_day endDate,string symbol1,
@@ -70,15 +70,36 @@ void PairsStopLoss::check(){
     if(curZscore > threshold){
         if(noShares > -x){
             sell();
+            minHeap.push(curDev*stop_loss_threshold + curMean) ;
+            maxHeap.push(curDev*(-1) * stop_loss_threshold + curMean) ;
         }
     }
     if(curZscore < -threshold){
         if(noShares < x){
             buy();
+            minHeap.push(curDev*stop_loss_threshold + curMean) ;
+            maxHeap.push(curDev*(-1) * stop_loss_threshold + curMean) ;
         }
     }    
 
+    if(minHeap.empty() == false && curSpread >= minHeap.top())
+    {
+        while(minHeap.empty() == false && curSpread >= minHeap.top())
+        {   
+            minHeap.pop() ;
+            buy() ;
+        }
+    }
+    else if(maxHeap.empty() == false && curSpread <= maxHeap.top())
+    {
+        while(maxHeap.empty() == false && curSpread <= maxHeap.top())
+        {
+            maxHeap.pop() ;
+            sell() ;
+        }
+    }
 
+}
 void PairsStopLoss::squareOff(){
     if(noShares > 0){
         curBal = curBal + noShares*(curPrice1-curPrice2);

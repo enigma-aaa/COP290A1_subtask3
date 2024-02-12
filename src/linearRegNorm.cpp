@@ -108,9 +108,9 @@ void LinearRegression::fit()
 
     for(int i = 0 ; i<train_table.rows.size() ; i++)
     {
-        if(grtrEqual(table->rows[i].date,startDate)){
-            startDateLoc = i;
-            cout << "startDateLOc is:" << startDateLoc << endl;
+        if(grtrEqual(table->rows[i].date,train_start_date)){
+            startLoc = i;
+            cout << "startDateLOc is:" << startLoc << endl;
             break;
         }
     }
@@ -203,14 +203,15 @@ void LinearRegression::sell()
 void LinearRegression::check()
 {
     double predicted_price = predict(curLoc);
-    if (predicted_price >= curPrice * (1 + p / 100))
+    cout<<predicted_price<<" "<<curPrice<<endl;
+    if (predicted_price >= (curPrice + curPrice * p / 100))
     {
         if (noShares < x)
         {
             buy();
         }
     }
-    if (predicted_price <= curPrice * (1 - p / 100))
+    if (predicted_price <= (curPrice  - curPrice * p / 100))
     {
         if (noShares > -1 * x)
         {
@@ -257,15 +258,19 @@ void LinearRegression::squareOff()
 void LinearRegression::main()
 {
     fit() ;
+    for(auto x : coefficients)
+    {
+        cout<<x<<" ";
+    }
+    cout<<endl;
     PriceTable createTable = getPriceTable(symbolName, mod_start_date, end_date);
     table = &createTable;
 
     int startDateLoc = -1;
     for (int i = 0; i < table->rows.size(); i++)
     {
-        if(grtrEqual(table->rows[i].date,startDate)){
+        if(grtrEqual(table->rows[i].date,start_date)){
             startDateLoc = i;
-            cout << "startDateLOc is:" << startDateLoc << endl;
             break;
         }
     }
@@ -275,6 +280,7 @@ void LinearRegression::main()
         curPrice = table->rows[i].close;
         curLoc = i;
         check();
+        
     }
     squareOff();
     writeCSVfiles() ;
