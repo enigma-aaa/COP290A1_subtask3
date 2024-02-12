@@ -29,24 +29,6 @@ void ADXStrat::first(int startDateLoc){
     ATR = curTR;
     DIplus = 0;
     DIminus = 0;
-    /*
-    for(int i = startDate_n_Loc;i<startDateLoc;i++){
-        PriceTableRow& curRow = table->rows[i];
-        PriceTableRow& prevRow = table->rows[i-1];
-        curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
-        DMplus = max(0.0,curRow.high - prevRow.high);
-        DMminus = max(0.0,curRow.low - prevRow.low);
-        ATR = alphaATR*(curTR - ATR) + ATR;
-        double DMplusByATR = DMplus/ATR;
-        double DMminusByATR = DMminus/ATR;
-        DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
-        DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
-        DX = ((DIplus + DIminus)*100)/(DIplus - DIminus);
-        ADX = alphaATR*(DX - ADX) + ADX;            
-    }
-    return;
-    */
-    //do not need above misunderstood definition
 }
 void ADXStrat::writeCashFlow(chrono::year_month_day curDate){
     flow.addRow(curDate,curBal);
@@ -134,13 +116,24 @@ void ADXStrat::multiMain(PriceTable* srcTable){
         DMplus = max(0.0,curRow.high - prevRow.high);
         DMminus = max(0.0,curRow.low - prevRow.low);
         ATR = alphaATR*(curTR - ATR) + ATR;
-        double DMplusByATR = DMplus/ATR;
-        double DMminusByATR = DMminus/ATR;
-        DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
-        DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
-        DX = ((DIplus - DIminus)*100)/(DIplus + DIminus);
-        ADX = alphaATR*(DX - ADX) + ADX;     
-        check();
+        if(ATR != 0){
+            double DMplusByATR = DMplus/ATR;
+            double DMminusByATR = DMminus/ATR;
+            DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
+            DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
+            if((DIminus+DIplus) != 0){
+                DX = ((DIplus - DIminus)*100)/(DIplus + DIminus);
+                //cout << " DIplus+DIminus:" << (DIplus+DIminus);
+                ADX = alphaATR*(DX - ADX) + ADX;     
+                //cout << " ADX is:" << ADX << endl;
+                check();
+            }else{
+                ADX = 0;
+            }
+        }else{
+            ATR= 0;
+            ADX = 0;
+        }
         writeCashFlow(curRow.date);
     }
     //writeCSVfiles();
