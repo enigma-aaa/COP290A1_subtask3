@@ -112,6 +112,7 @@ void DateFloat::writeToCsv(string filename){
     ofstream csv_file;
     csv_file.open(filename);
     string Header = "Date,"+floatHeading;
+    csv_file << Header << endl;
     string line;
     for(auto& x:rows)
     {
@@ -125,7 +126,12 @@ void CashFlow::addRow(chrono::year_month_day date , double curBal)
     CashFlowRows a = CashFlowRows(date,curBal) ;
     rows.push_back(a) ;
 }
-
+void DateFloat::addRow(chrono::year_month_day date,double val){
+    DateFloatRow a = DateFloatRow(date,val);
+    rows.push_back(a);
+}
+DateFloat::DateFloat(){}
+DateFloat::DateFloat(string floatHeading){this->floatHeading = floatHeading;}
 PriceTableRow PriceTableRow::getRowObj(string row)
 {
     PriceTableRow temp ;
@@ -165,6 +171,10 @@ string DateFloatRow::getString(){
     return result;
 }
 
+DateFloatRow::DateFloatRow(chrono::year_month_day date,double val){
+    this->date = date;
+    this->val = val;
+}
 void PriceTable::read_csv(string filename)
 {
     ifstream csv_file ;

@@ -6,6 +6,7 @@ MACDStrat::MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_d
     modStartDate = subtractDate(startDate,2*n2);
     cout << "modStartDate is: year:" << int(modStartDate.year()) << " month:" << unsigned(modStartDate.month()) << " day:" << unsigned(modStartDate.day()) << endl;
     table = nullptr;
+    dateFloat = DateFloat("Signal");
 }
 MACDStrat::MACDStrat() {}
 void MACDStrat::buy(){
@@ -58,6 +59,12 @@ void MACDStrat::writeCSVfiles()
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);        
 }
+void MACDStrat::writeDebugFiles()
+{
+    string baseFilePath = "./bin/stockCSV/";
+    string debugFile = baseFilePath + "Signal.csv";
+    dateFloat.writeToCsv(debugFile);
+}
 void MACDStrat::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
@@ -74,6 +81,7 @@ void MACDStrat::main(){
     multiMain(&curTable);
     squareOff();
     writeCSVfiles();
+    writeDebugFiles();
     writeFinalPNL();
 }
 void MACDStrat::multiMain(PriceTable* srcTable){
@@ -100,6 +108,7 @@ void MACDStrat::multiMain(PriceTable* srcTable){
         shortEWM = alphaShort*(curPrice - shortEWM) + shortEWM;
         MACD = shortEWM - longEWM;
         signal = alphaSig*(MACD - signal) + signal;
+        dateFloat.addRow(curDate,MACD -signal);
         check();
         //cout<<"signal "<<signal<<" macd "<<MACD<<" ";
         //printDate(curDate); cout << endl;

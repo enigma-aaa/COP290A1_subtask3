@@ -5,6 +5,7 @@ n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
     modStartDate = subtractDate(startDate, max(2 * n,30));
     noShares = 0 ;
     table = nullptr;
+    dateFloat = DateFloat("DMA");
 }
 DMA::DMA() {}
 void DMA::buy(chrono :: year_month_day date)
@@ -31,7 +32,8 @@ void DMA::check()
     double curMean = curSum/n ;
 
     /*Both buy and sell may occur here because of greater than or equal to*/
-
+    double deviation = (curPrice - curMean)/sd;
+    dateFloat.addRow(table->rows[curLoc].date,deviation);
     if(curPrice >= curMean + p*sd)
     {
         //buy
@@ -66,6 +68,11 @@ void DMA::writeCSVfiles()
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);        
 }
+void DMA::writeDebugFiles(){
+    string baseFilePath = "./bin/stockCSV/";
+    string debugFile = baseFilePath + "DMA.csv";
+    dateFloat.writeToCsv(debugFile);
+}
 void DMA::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
@@ -83,6 +90,7 @@ void DMA::main()
     multiMain(&createTable);
     writeCSVfiles();
     writeFinalPNL();
+    writeDebugFiles();
 }
 void DMA::multiMain(PriceTable* srcTable)
 {

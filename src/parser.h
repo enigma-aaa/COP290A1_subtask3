@@ -68,8 +68,8 @@ class PriceTable {
 class DateFloatRow{
 public: 
     chrono::year_month_day date;
-    float val;
-    DateFloatRow(chrono::year_month_day date,float val);
+    double val;
+    DateFloatRow(chrono::year_month_day date,double val);
     string getString();
 };
 class DateFloat{
@@ -79,4 +79,5 @@ class DateFloat{
     DateFloat();
     DateFloat(string floatHeading);
     void writeToCsv(string filename);
+    void addRow(chrono::year_month_day date,double val);
 };

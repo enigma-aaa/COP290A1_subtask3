@@ -4,6 +4,7 @@ RSI::RSI(int n,int x,double oversold_threshold,double overbought_threshold,chron
 :n(n),x(x),oversold_threshold(oversold_threshold),overbought_threshold(overbought_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
     modStartDate = subtractDate(startDate,2*n);
     table = nullptr;
+    dateFloat = DateFloat("RSI");
 }
 RSI::RSI() {}
 void RSI::buy()
@@ -38,6 +39,7 @@ void RSI::check()
 {
     double RS = curGainSum/curLossSum;
     double RSI = 100 - 100/(1+RS);
+    dateFloat.addRow(curDate,RSI);
     if(RSI < oversold_threshold){
         if(noShares < x){
             buy();
@@ -56,6 +58,11 @@ void RSI::writeCSVfiles(){
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);  
 }
+void RSI::writeDebugFiles(){
+    string baseFilePath = "./bin/stockCSV/";
+    string debugFile = baseFilePath + "RSI.csv";
+    dateFloat.writeToCsv(debugFile);
+}
 void RSI::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
@@ -73,6 +80,7 @@ void RSI::main()
     multiMain(&createTable);
     writeCSVfiles();
     writeFinalPNL();
+    writeDebugFiles();
 }
 void RSI::squareOff(){
     curBal = curBal + noShares*curPrice;
@@ -106,6 +114,7 @@ void RSI::multiMain(PriceTable* srcTable)
         //cout << " curGainSum:" << curGainSum/n << " curLossSum:" << curLossSum/n;
         check();
         writeCashFlow();            
+
     }        
     //writeCSVfiles();
     squareOff();
