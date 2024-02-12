@@ -10,8 +10,8 @@ public:
     int n1 = 12;
     int n2 = 26;
     int nSig = 9;
-    double alpha1 = 2.0/(n1+1);
-    double alpha2 = 2.0/(n2+1);
+    double alphaLong = 2.0/(n2+1);
+    double alphaShort = 2.0/(n1+1);
     double alphaSig = 2.0/(nSig+1);
     double MACD = 0;
     double shortEWM,longEWM;

@@ -1,43 +1,75 @@
 #include "PairsStopLoss.h"
-
+#include <queue>
 PairsStopLoss::PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
 chrono::year_month_day startDate,
 chrono::year_month_day endDate,string symbol1,
-string symbol2):x(x),n(n),threshold(threshold),startDate(startDate),
+string symbol2):x(x),n(n),threshold(threshold),stop_loss_threshold(stop_loss_threshold) ,  startDate(startDate),
 endDate(endDate),symbol1(symbol1),symbol2(symbol2){
     modStartDate = subtractDate(startDate,2*n);
     cout << "called pairs constructor" << endl;
+    noShares = 0 ;
+    cout<<"stop "<<stop_loss_threshold<<endl;
 }
 
 void PairsStopLoss::buy(){
-    noShares++;
-    curBal = curBal - curPrice1 + curPrice2;
-    // if(!sellMean.empty()){
-    //     sellMean.pop(); 
-    //     sellStandDev.pop();
-    // }else{
-    //     buyMean.push(curMean);
-    //     buyStandDev.push(curDev);
+    cout<<"inside buying "<<shortSellStocks.size()<<" "<<boughtStocks.size()<<endl;
+    if(shortSellStocks.size()!=0)
+    {
+        shortSellStocks.erase(shortSellStocks.begin()) ;
+    }
+    else
+    {
+        Node temp(curLoc , curMean , curDev , stop_loss_threshold) ;
+        boughtStocks.insert(temp) ;
+        cout<<"conditions "<<temp.condition1<<" "<<temp.condition2<<" "<<curMean<<" "<<curDev<<" "<<stop_loss_threshold<<endl;
+        cout<<"Pushed into boughtStocks "<<boughtStocks.size()<<endl;
+    }
+    curBal = curBal -curPrice1 + curPrice2 ;
+    noShares++ ;
+    // if(noShares < 0)
+    // {
+    //     noShares++ ;
+    //     curBal = curBal - curPrice1 + curPrice2 ;
+    //     myPortfolio.removeHead() ;
     // }
-    // stats1.addRow(curDate,"BUY",1,curPrice1);
-    // stats2.addRow(curDate,"SELL",1,curPrice2);
-    Node temp = Node(curLoc , curMean , curDev , stop_loss_threshold) ;
-    myPortfolio.addToTail(temp) ;
+    // else
+    // {
+    //     noShares++;
+    //     curBal = curBal - curPrice1 + curPrice2;
+    //     Node* temp = new Node(curLoc , curMean , curDev , stop_loss_threshold) ;
+    //     myPortfolio.addToTail(temp) ;
+    // }
 }
 
 void PairsStopLoss::sell(){
-    noShares--;
-    curBal = curBal + curPrice1 - curPrice2;
-    // if(!buyMean.empty()){
-    //     buyMean.pop();
-    //     buyStandDev.pop();
-    // }else{
-    //     sellMean.push(curMean);
-    //     sellStandDev.push(curDev);
+    cout<<"inside buying "<<shortSellStocks.size()<<" "<<boughtStocks.size()<<endl;
+    if(boughtStocks.size()!=0)
+    {
+        boughtStocks.erase(boughtStocks.begin()) ; 
+    }
+    else
+    {
+        Node temp(curLoc , curMean ,curDev , stop_loss_threshold) ;
+        shortSellStocks.insert(temp);
+        
+        cout<<"conditions "<<temp.condition1<<" "<<temp.condition2<<" "<<curMean<<" "<<curDev<<" "<<stop_loss_threshold<<endl;
+        cout<<"Pushed into shortSellStocks "<<shortSellStocks.size()<<endl;
+    }
+    curBal = curBal + curPrice1 - curPrice2 ;
+    noShares-- ;
+    // if(noShares > 0)
+    // {
+    //     noShares--;
+    //     curBal = curBal + curPrice1 - curPrice2;
+    //     myPortfolio.removeHead() ;
     // }
-    // stats1.addRow(curDate,"SELL",1,curPrice1);
-    // stats2.addRow(curDate,"BUY",1,curPrice2);
-    myPortfolio.removeHead() ;
+    // else
+    // {
+    //     noShares-- ;
+    //     curBal = curBal +curPrice1 - curPrice2 ;
+    //     Node* temp = new Node(curLoc, curMean , curDev , stop_loss_threshold) ;
+    //     myPortfolio.addToTail(temp) ;
+    // }
 }
 
 void PairsStopLoss::first(int startDateLoc){        
@@ -74,12 +106,14 @@ int PairsStopLoss::check(){
     if(curZscore > threshold){
         if(noShares > -x){
             sell() ;
+
             return -1 ;       
         }
     }
     if(curZscore < -threshold){
         if(noShares < x){
             buy() ;
+
             return 1 ;
         }
     }    
@@ -88,49 +122,95 @@ int PairsStopLoss::check(){
 
 int PairsStopLoss:: checkForThresholds()
 {
-    Node* temp = myPortfolio.head ;
+    // Node* temp = myPortfolio.head ;
     int stocksCrossed = 0 ;
-    while(temp != NULL)
-    {
-        if(curSpread >= temp->condition1)
-        {
-            stocksCrossed++;
-            
-            if(temp->prev == NULL)
-            {
-                myPortfolio.head = temp->next ;
-                temp = myPortfolio.head ;
-            }
-            else
-            {
-                temp->prev->next = temp->next ;
-                temp = temp->next ;
-            }
-            noShares-- ;
 
-        }
-        else if(curSpread <= temp->condition2)
+    for(auto it = boughtStocks.begin() ; it!= boughtStocks.end();)
+    {
+        if(curSpread > (*it).condition1 )
         {
-            stocksCrossed--;
+            curBal = curBal - curPrice1 + curPrice2 ;
+            stocksCrossed++ ;
             noShares++ ;
-            if(temp->prev == NULL)
-            {
-                myPortfolio.head = temp->next ;
-                temp = myPortfolio.head ;
-            }
-            else
-            {
-                temp->prev->next = temp->next ;
-                temp->next->prev = temp->prev ;
-                temp = temp->next ;
-            
-            }
+            it = boughtStocks.erase(it) ;
+        }
+        else if(curSpread < (*it).condition2)
+        {
+            curBal = curBal + curPrice1 - curPrice2 ;
+            stocksCrossed-- ;
+            noShares-- ;
+            it = boughtStocks.erase(it) ;
         }
         else
         {
-            temp = temp->next; 
+            it++ ;
         }
     }
+    for(auto it = shortSellStocks.begin() ; it!= shortSellStocks.end();)
+    {
+        if(curSpread > (*it).condition1 )
+        {
+            cout<<"removing "<<endl;
+            curBal = curBal - curPrice1 + curPrice2 ;
+            stocksCrossed++ ;
+            noShares++ ;
+            it = shortSellStocks.erase(it) ;
+        }
+        else if(curSpread < (*it).condition2)
+        {
+            cout<<"removing "<<endl;
+            curBal = curBal + curPrice1 - curPrice2 ;
+            stocksCrossed-- ;
+            noShares-- ;
+            it = shortSellStocks.erase(it) ;
+        }
+        else
+        {
+            it++ ;
+        }
+    }
+    // while(temp != NULL)
+    // {
+    //     if(curSpread >= temp->condition1)
+    //     {
+    //         stocksCrossed++;
+    //         curBal = curBal -curPrice1 + curPrice2 ;
+    //         if(temp->prev == NULL)
+    //         {
+    //             myPortfolio.head = temp->next ;
+    //             temp = myPortfolio.head ;
+    //         }
+    //         else
+    //         {
+    //             temp->prev->next = temp->next ;
+    //             temp = temp->next ;
+    //         }
+    //         noShares++ ;
+
+    //     }
+    //     else if(curSpread <= temp->condition2)
+    //     {
+    //         stocksCrossed--;
+    //         noShares-- ;
+    //         curBal = curBal + curPrice1 - curPrice2 ;
+    //         if(temp->prev == NULL)
+    //         {
+    //             myPortfolio.head = temp->next ;
+    //             temp = myPortfolio.head ;
+    //         }
+    //         else
+    //         {
+    //             temp->prev->next = temp->next ;
+    //             temp->next->prev = temp->prev ;
+    //             temp = temp->next ;
+            
+    //         }
+    //     }
+    //     else
+    //     {
+    //         temp = temp->next; 
+    //     }
+    // }
     return stocksCrossed ;
 }
 

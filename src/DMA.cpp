@@ -93,9 +93,9 @@ void DMA::multiMain(PriceTable* srcTable)
     curPrice = 0 ;
     for (int i = 0; i < table->rows.size(); i++)
     {
-        if (table->rows[i].date == startDate)
-        {
+        if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
+            break;
         }
     }
     if (startDateLoc == -1)
