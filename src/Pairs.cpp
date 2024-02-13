@@ -6,8 +6,8 @@ chrono::year_month_day endDate,string symbol1,
 string symbol2):x(x),n(n),threshold(threshold),startDate(startDate),
 endDate(endDate),symbol1(symbol1),symbol2(symbol2){
     modStartDate = subtractDate(startDate,max(2*n,30));
-    cout << "called pairs constructor" << endl;
-    cout<<"threshold is"<< threshold <<endl;
+    //cout << "called pairs constructor" << endl;
+    //cout<<"threshold is"<< threshold <<endl;
 }
 
 void Pairs::buy(){
@@ -88,9 +88,6 @@ void Pairs::main(){
             startDateLoc = i;
             break;
         }
-    }
-    if(startDateLoc == -1){
-        cout << "start date not located in table for some reason" << endl;
     }
     first(startDateLoc);
     for(int i=startDateLoc;i<table1->rows.size();i++){
