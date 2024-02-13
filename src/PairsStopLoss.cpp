@@ -7,9 +7,9 @@ chrono::year_month_day endDate,string symbol1,
 string symbol2):x(x),n(n),threshold(threshold),stop_loss_threshold(stop_loss_threshold) ,  startDate(startDate),
 endDate(endDate),symbol1(symbol1),symbol2(symbol2){
     modStartDate = subtractDate(startDate,2*n);
-    cout << "called pairs constructor" << endl;
+    //cout << "called pairs constructor" << endl;
     noShares = 0 ;
-    cout<<"stop "<<stop_loss_threshold<<endl;
+    //cout<<"stop "<<stop_loss_threshold<<endl;
 }
 
 void PairsStopLoss::buy(){
@@ -241,9 +241,6 @@ void PairsStopLoss::main(){
             startDateLoc = i;
             break;
         }
-    }
-    if(startDateLoc == -1){
-        cout << "start date not located in table for some reason" << endl;
     }
     first(startDateLoc);
     //for handle stop loss threshold instead of just queue might have to keep a linked list here
