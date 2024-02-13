@@ -3,7 +3,7 @@
 
 RSI::RSI(int n,int x,double oversold_threshold,double overbought_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
 :n(n),x(x),oversold_threshold(oversold_threshold),overbought_threshold(overbought_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
-    modStartDate = subtractDate(startDate,2*n);
+    modStartDate = subtractDate(startDate,max(2*n,30));
     table = nullptr;
     dateFloat = DateFloat("RSI");
 }

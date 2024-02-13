@@ -4,7 +4,7 @@ ADXStrat::ADXStrat(int n,int x,double adx_threshold,chrono::year_month_day start
 n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
     noShares = 0;
     curBal = 0;
-    modStartDate = subtractDate(startDate,2*n);
+    modStartDate = subtractDate(startDate,max(2*n,30));
     alphaATR = 2.0/((double)(n+1));
     table = nullptr;
 }

@@ -6,7 +6,7 @@ chrono::year_month_day startDate,
 chrono::year_month_day endDate,string symbol1,
 string symbol2):x(x),n(n),threshold(threshold),stop_loss_threshold(stop_loss_threshold) ,  startDate(startDate),
 endDate(endDate),symbol1(symbol1),symbol2(symbol2){
-    modStartDate = subtractDate(startDate,2*n);
+    modStartDate = subtractDate(startDate,max(2*n,30));
     //cout << "called pairs constructor" << endl;
     noShares = 0 ;
     //cout<<"stop "<<stop_loss_threshold<<endl;

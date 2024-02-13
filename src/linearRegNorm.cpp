@@ -9,7 +9,7 @@ LinearRegression::LinearRegression(chrono::year_month_day train_start_date, chro
     noShares = 0 ;
     curBal = 0 ;
     curLoc = -1 ;
-    mod_start_date = subtractDate(start_date, 5);
+    mod_start_date = subtractDate(start_date, 10);
 }
 LinearRegression::LinearRegression(){}
 vector<vector<double>> LinearRegression::inverse(vector<vector<double>> &v)

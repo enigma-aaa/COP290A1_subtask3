@@ -4,7 +4,7 @@ MACDStrat::MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_d
 :x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
     noShares = 0;
     curBal = 0;
-    modStartDate = subtractDate(startDate,2*n2);
+    modStartDate = subtractDate(startDate,max(2*n2,30));
     // cout << "modStartDate is: year:" << int(modStartDate.year()) << " month:" << unsigned(modStartDate.month()) << " day:" << unsigned(modStartDate.day()) << endl;
     table = nullptr;
     dateFloat = DateFloat("Signal");
