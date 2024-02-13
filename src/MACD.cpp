@@ -74,7 +74,6 @@ void MACDStrat::writeFinalPNL(){
 void MACDStrat::main(){
     PriceTable curTable = getPriceTable(symbolName,modStartDate,endDate);
     multiMain(&curTable);
-    squareOff();
     writeCSVfiles();
     writeFinalPNL();
 }

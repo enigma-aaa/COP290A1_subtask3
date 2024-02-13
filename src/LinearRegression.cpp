@@ -128,16 +128,6 @@ class LinearRegression{
     void squareOff()
     {
         curBal = curBal + noShares*table.rows.back().close ;
-        if(noShares > 0 )
-        {
-            stats.addRow(table.rows.back().date, "SELL" , noShares ,curPrice) ;
-            flow.addRow(table.rows.back().date , curBal) ;
-        }
-        if(noShares < 0)
-        {
-            stats.addRow(table.rows.back().date, "BUY" , noShares , curPrice) ;
-            flow.addRow(table.rows.back().date , curBal) ;
-        }
         noShares = 0 ;
     }
     void main()
