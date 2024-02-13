@@ -101,9 +101,6 @@ void ADXStrat::multiMain(PriceTable* srcTable){
             break;
         }
     }
-    if(startDateLoc == -1){
-        cout << "start date not located in table for some reason" << endl;
-    }
     first(startDateLoc);
     writeCashFlow(table->rows[startDateLoc].date);
     //may have to change starting index to deal with threshold=0
