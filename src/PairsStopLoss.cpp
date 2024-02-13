@@ -107,14 +107,12 @@ int PairsStopLoss::check(){
     if(curZscore > threshold){
         if(noShares > -x){
             sell() ;
-
             return -1 ;       
         }
     }
     if(curZscore < -threshold){
         if(noShares < x){
             buy() ;
-
             return 1 ;
         }
     }    
