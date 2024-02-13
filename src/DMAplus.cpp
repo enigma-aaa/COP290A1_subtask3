@@ -150,7 +150,7 @@ void DMAPlus::main(){
 void DMAPlus::multiMain(PriceTable* srcTable){
     table = srcTable;
     int tableSize = table->rows.size();
-    int startDateLoc = table->rows.size();
+    int startDateLoc = -1;
     for(int i=0;i<table->rows.size();i++){
         if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
