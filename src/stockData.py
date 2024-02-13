@@ -26,6 +26,7 @@ csvFileName = sys.argv[8]
 #    pass
 df = stock_df(symbol=symbolName,from_date=startDate,to_date=endDate,series="EQ")
 df = df[["DATE","OPEN","HIGH","LOW","PREV. CLOSE","CLOSE","VWAP","NO OF TRADES"]]
+df = df.drop_duplicates("DATE")
 df.set_index("DATE")
 df[::-1].to_csv(csvFileName,index=False)
 print("number of rows of dataframe:",len(df))

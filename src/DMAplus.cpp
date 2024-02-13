@@ -92,16 +92,28 @@ int DMAPlus::check(){
     //cofirm p given here as pre multiplied as 100
     //assuming p is non zero
     cout<<AMA<<endl;
-    if(perCentDiff >= p){
-        if(noShares < x){
-            buy();
-            return 1;
-        }       
+    if(curPrice >= AMA + ((AMA*p)/100)) 
+    {
+        if(noShares < x)
+        {
+            buy() ;
+            return 1 ;
+        }
+        else if(noShares == x)
+        {
+            return 2 ;
+        }
     }
-    if(perCentDiff <= -p){
-        if(noShares > -x){
-            sell();
-            return -1;
+    if(curPrice <= AMA - ((AMA * p) /100))
+    {
+        if(noShares > -x)
+        {
+            sell() ;
+            return -1 ;
+        }
+        else if(noShares == -x)
+        {
+            return -2 ;
         }
     }
     return 0;
@@ -171,6 +183,7 @@ void DMAPlus::multiMain(PriceTable* srcTable){
         AMA = temp ;
         int shareDelta1 =  check();
         int shareDelta2 = handleMaxHold();
+        if(shareDelta1 == 2 && shareDelta2 == )
         int shareDelta = shareDelta1 + shareDelta2;
         if(shareDelta > 0){
             stats.addRow(curDate,"BUY",shareDelta,curPrice);

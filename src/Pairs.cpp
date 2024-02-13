@@ -6,6 +6,7 @@ string symbol2):x(x),n(n),threshold(threshold),startDate(startDate),
 endDate(endDate),symbol1(symbol1),symbol2(symbol2){
     modStartDate = subtractDate(startDate,max(2*n,30));
     cout << "called pairs constructor" << endl;
+    cout<<"threshold is"<< threshold <<endl;
 }
 
 void Pairs::buy(){
@@ -48,7 +49,7 @@ void Pairs::check(){
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
     curZscore = (curSpread - curMean)/curDev;
-    //cout << "zScore is:" << curZscore << endl;
+    cout << "zScore is:" << curZscore <<" "<< threshold << endl;
     if(curZscore > threshold){
         if(noShares > -x){
             sell();

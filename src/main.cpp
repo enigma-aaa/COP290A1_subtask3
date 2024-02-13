@@ -199,7 +199,7 @@ void handlePairs(int argc, char *argv[])
     string symbol2(argv[3]);
     int x = stoi(argv[4]);
     int n = stoi(argv[5]);
-    int threshold = stoi(argv[6]);
+    double threshold = stod(argv[6]);
     string startDateStr(argv[7]);
     string endDateStr(argv[8]);
     chrono::year_month_day startDate = str2Date(startDateStr);
@@ -221,8 +221,8 @@ void handlePairs(int argc, char *argv[])
     else if (argc == 10)
     {
         int stop_loss_thres = stoi(argv[9]);
-        PairsStopLoss pairsStopLoss(x,n,threshold,stop_loss_thres,startDate, endDate , symbol1 , symbol2) ;
-        pairsStopLoss.main() ;
+        PairsStopLoss pairsStopLoss(x, n, threshold, stop_loss_thres, startDate, endDate, symbol1, symbol2);
+        pairsStopLoss.main();
         // cout << "stop_loss_thres:" << stop_loss_thres << endl;
     }
     else
