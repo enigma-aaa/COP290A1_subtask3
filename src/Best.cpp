@@ -110,13 +110,13 @@ void Best::main(){
             }
         }
     }*/
-    cout << "adx bal is:" << adx.curBal << endl;
-    cout << "basic bal is:" << basic.curBal << endl;
-    cout << "dma bal is:" << dma.curBal << endl;
-    cout << "dmaPlus bal is:" << dmaPlus.curBal << endl;
-    cout << "macd bal is:" << macd.curBal << endl;
-    cout << "rsi bal is:" << rsi.curBal << endl;
-    cout << "regression bal is:" << regression.curBal << endl;
+    //cout << "adx bal is:" << adx.curBal << endl;
+    //cout << "basic bal is:" << basic.curBal << endl;
+    //cout << "dma bal is:" << dma.curBal << endl;
+    //cout << "dmaPlus bal is:" << dmaPlus.curBal << endl;
+    //cout << "macd bal is:" << macd.curBal << endl;
+    //cout << "rsi bal is:" << rsi.curBal << endl;
+    //cout << "regression bal is:" << regression.curBal << endl;
 
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     int minIndx = 0;
@@ -163,12 +163,12 @@ void Best::main(){
     long rsiTimeNano = chrono::duration_cast<chrono::nanoseconds>(rsiEnd-rsiStart).count();
     long regTimeNano = chrono::duration_cast<chrono::nanoseconds>(regEnd-regStart).count();
 
-    cout << "timeNano:" << timeNano << "ns" << endl;
-    cout << "adxTimeNano:" << adxTimeNano << "ns" << endl;
-    cout << "basicTimeNano:" << basicTimeNano << "ns" << endl;
-    cout << "dmaTimeNano:" << dmaTimeNano << "ns" << endl;
-    cout << "dmaPlusTimeNano:" << dmaPlusTimeNano << "ns" << endl;
-    cout << "macdTimeNano:" << macdTimeNano << "ns" << endl;
-    cout << "rsiTimeNano:" << rsiTimeNano << "ns" << endl;
-    cout << "regTimeNano:" << regTimeNano << "ns" << endl;
+    //cout << "timeNano:" << timeNano << "ns" << endl;
+    //cout << "adxTimeNano:" << adxTimeNano << "ns" << endl;
+    //cout << "basicTimeNano:" << basicTimeNano << "ns" << endl;
+    //cout << "dmaTimeNano:" << dmaTimeNano << "ns" << endl;
+    //cout << "dmaPlusTimeNano:" << dmaPlusTimeNano << "ns" << endl;
+    //cout << "macdTimeNano:" << macdTimeNano << "ns" << endl;
+    //cout << "rsiTimeNano:" << rsiTimeNano << "ns" << endl;
+    //cout << "regTimeNano:" << regTimeNano << "ns" << endl;
 }
