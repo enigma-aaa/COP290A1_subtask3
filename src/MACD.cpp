@@ -94,6 +94,7 @@ void MACDStrat::multiMain(PriceTable* srcTable){
     first(startDateLoc);
     //have to check start indices here also
     //handling startDateLoc already in check function have to start with startDateLoc+1
+    writeCashFlow(table->rows[startDateLoc].date);
     for(int i = startDateLoc+1; i < table->rows.size();i++)
     {
         curPrice = table->rows[i].close;
