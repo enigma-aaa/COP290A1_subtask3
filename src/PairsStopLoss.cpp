@@ -58,19 +58,6 @@ void PairsStopLoss::sell(){
     }
     curBal = curBal + curPrice1 - curPrice2 ;
     noShares-- ;
-    // if(noShares > 0)
-    // {
-    //     noShares--;
-    //     curBal = curBal + curPrice1 - curPrice2;
-    //     myPortfolio.removeHead() ;
-    // }
-    // else
-    // {
-    //     noShares-- ;
-    //     curBal = curBal +curPrice1 - curPrice2 ;
-    //     Node* temp = new Node(curLoc, curMean , curDev , stop_loss_threshold) ;
-    //     myPortfolio.addToTail(temp) ;
-    // }
 }
 
 void PairsStopLoss::first(int startDateLoc){        
@@ -103,7 +90,6 @@ int PairsStopLoss::check(){
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
     curZscore = (curSpread - curMean)/curDev;
-    // cout << "zScore is:" << curZscore << endl;
     if(curZscore > threshold){
         if(noShares > -x){
             sell() ;
@@ -121,7 +107,6 @@ int PairsStopLoss::check(){
 
 int PairsStopLoss:: checkForThresholds()
 {
-    // Node* temp = myPortfolio.head ;
     int stocksCrossed = 0 ;
 
     for(auto it = boughtStocks.begin() ; it!= boughtStocks.end();)
