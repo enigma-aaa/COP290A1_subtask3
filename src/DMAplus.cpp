@@ -92,8 +92,7 @@ int DMAPlus::handleMaxHold(){
 int DMAPlus::check(){
     //cofirm p given here as pre multiplied as 100
     //assuming p is non zero
-    // cout<<AMA<<endl;
-    cout<<curPrice<<" "<<AMA<<" "<<p<<" " <<endl;
+    // cout<<AMA<<endl;cout
     if(curPrice >= (AMA + ((AMA*p)/100))) 
     {
         if(noShares < x)
@@ -185,7 +184,6 @@ void DMAPlus::multiMain(PriceTable* srcTable){
         AMA = temp ;
         int shareDelta1 =  check();
         int shareDelta2 = handleMaxHold();
-        cout<<"shareDelta1 "<<shareDelta1<<" shareDelta2"<<shareDelta2<<endl;
         int shareDelta = shareDelta1 + shareDelta2;
         if(shareDelta1 == 2 && shareDelta2 == -1)
         {
@@ -194,7 +192,6 @@ void DMAPlus::multiMain(PriceTable* srcTable){
         }
         else if(shareDelta1  == -2 && shareDelta2 == 1)
         {
-            cout<<"here"<<endl;
             sell() ;
             shareDelta = 0 ;
         }

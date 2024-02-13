@@ -108,16 +108,20 @@ void ADXStrat::multiMain(PriceTable* srcTable){
         curTR = max(max(curRow.high - curRow.low,curRow.high - curRow.prevClose),curRow.low - curRow.prevClose);
         DMplus = max(0.0,curRow.high - prevRow.high);
         DMminus = max(0.0,curRow.low - prevRow.low);
-        ATR = alphaATR*(curTR - ATR) + ATR;
+        // ATR = alphaATR*(curTR - ATR) + ATR;
+        ATR = alphaATR*curTR - alphaATR * ATR + ATR;
         if(ATR != 0){
             double DMplusByATR = DMplus/ATR;
             double DMminusByATR = DMminus/ATR;
-            DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
-            DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
+            // DIplus = alphaATR*(DIplus - DMplusByATR) + DMplusByATR;
+            DIplus = alphaATR*DIplus - alphaATR* DMplusByATR + DMplusByATR;
+            // DIminus = alphaATR*(DIminus - DMminusByATR) + DMminusByATR;
+            DIminus = alphaATR*DIminus - alphaATR *  DMminusByATR + DMminusByATR;
             if((DIminus+DIplus) != 0){
                 DX = ((DIplus - DIminus)*100)/(DIplus + DIminus);
                 //cout << " DIplus+DIminus:" << (DIplus+DIminus);
-                ADX = alphaATR*(DX - ADX) + ADX;     
+                // ADX = alphaATR*(DX - ADX) + ADX;     
+                ADX = alphaATR*DX - alphaATR *  ADX + ADX;     
                 //cout << " ADX is:" << ADX << endl;
                 check();
             }else{
