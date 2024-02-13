@@ -7,7 +7,6 @@ n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate),sym
     modStartDate = subtractDate(startDate,2*n);
     alphaATR = 2.0/((double)(n+1));
     table = nullptr;
-    dateFloat = DateFloat("ADX");
 }
 ADXStrat::ADXStrat(){}
 void ADXStrat::buy(){
@@ -34,9 +33,6 @@ void ADXStrat::first(int startDateLoc){
 }
 void ADXStrat::writeCashFlow(chrono::year_month_day curDate){
     flow.addRow(curDate,curBal);
-}
-void ADXStrat::writeADX(chrono::year_month_day curDate){
-    dateFloat.addRow(curDate,ADX);
 }
 
 void ADXStrat::writeFinalPNL(){
