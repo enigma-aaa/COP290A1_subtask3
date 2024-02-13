@@ -3,7 +3,7 @@ Flags=-std=c++20 -c -g
 BinFolder=./bin/
 SrcFolder=./src/
 
-all:buildProg
+all:main
 ifeq ($(strategy),BASIC)
 	./main $(strategy) $(symbol) $(n) $(x) $(start_date) $(end_date)
 endif
@@ -36,36 +36,36 @@ else
 	./main $(strategy) $(symbol1) $(symbol2) $(x) $(n) $(threshold) $(start_date) $(end_date) $(stop_loss_threshold)
 endif
 endif
-buildProg: main.o parser.o ADX.o basicStart.o DMA.o DMAplus.o MACD.o RSI.o dateUtil.o linearRegNorm.o Best.o Pairs.o
+main: ./bin/main.o ./bin/parser.o ./bin/ADX.o ./bin/basicStart.o ./bin/DMA.o ./bin/DMAplus.o ./bin/MACD.o ./bin/RSI.o ./bin/dateUtil.o ./bin/linearRegNorm.o ./bin/Best.o ./bin/Pairs.o
 	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o $(BinFolder)linearRegNorm.o $(BinFolder)Best.o $(BinFolder)Pairs.o -o main
-main.o: $(SrcFolder)main.cpp
+./bin/main.o: $(SrcFolder)main.cpp
 	$(Compiler) $(Flags) $(SrcFolder)main.cpp -o $(BinFolder)main.o
-parser.o: $(SrcFolder)parser.cpp
+./bin/parser.o: $(SrcFolder)parser.cpp
 	$(Compiler) $(Flags) $(SrcFolder)parser.cpp -o $(BinFolder)parser.o
 clearAll: clearObjs clearExe
-ADX.o: $(SrcFolder)ADX.cpp 
+./bin/ADX.o: $(SrcFolder)ADX.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)ADX.cpp -o $(BinFolder)ADX.o
-basicStart.o: $(SrcFolder)basicStart.cpp 
+./bin/basicStart.o: $(SrcFolder)basicStart.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)basicStart.cpp -o $(BinFolder)basicStart.o
-DMA.o: $(SrcFolder)DMA.cpp 
+./bin/DMA.o: $(SrcFolder)DMA.cpp 
 
 	$(Compiler) $(Flags) $(SrcFolder)DMA.cpp -o $(BinFolder)DMA.o
-DMAplus.o: $(SrcFolder)DMAplus.cpp 
+./bin/DMAplus.o: $(SrcFolder)DMAplus.cpp 
 
 	$(Compiler) $(Flags) $(SrcFolder)DMAplus.cpp -o $(BinFolder)DMAplus.o
-MACD.o: $(SrcFolder)MACD.cpp 
+./bin/MACD.o: $(SrcFolder)MACD.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)MACD.cpp -o $(BinFolder)MACD.o
-RSI.o: $(SrcFolder)RSI.cpp 
+./bin/RSI.o: $(SrcFolder)RSI.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)RSI.cpp -o $(BinFolder)RSI.o
-dateUtil.o: $(SrcFolder)dateUtil.cpp 
+./bin/dateUtil.o: $(SrcFolder)dateUtil.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)dateUtil.cpp -o $(BinFolder)dateUtil.o
-linearRegNorm.o: $(SrcFolder)linearRegNorm.cpp 
+./bin/linearRegNorm.o: $(SrcFolder)linearRegNorm.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)linearRegNorm.cpp -o $(BinFolder)linearRegNorm.o
-LinearRegression.o: $(SrcFolder)LinearRegression.cpp 
+./bin/LinearRegression.o: $(SrcFolder)LinearRegression.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)LinearRegression.cpp -o $(BinFolder)LinearRegression.o
-Best.o: $(SrcFolder)Best.cpp 
+./bin/Best.o: $(SrcFolder)Best.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)Best.cpp -o $(BinFolder)Best.o
-Pairs.o: $(SrcFolder)Pairs.cpp 
+./bin/Pairs.o: $(SrcFolder)Pairs.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)Pairs.cpp -o $(BinFolder)Pairs.o
 clearObjs:
 	rm -rf $(BinFolder)*
