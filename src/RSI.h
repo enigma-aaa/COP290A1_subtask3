@@ -35,7 +35,6 @@ public:
     void check();
     void writeCSVfiles();
     void writeFinalPNL();
-    void writeDebugFiles();
     void main();
     void multiMain(PriceTable* srcTable);
     void squareOff();

@@ -39,7 +39,6 @@ public:
     void writeCashFlow(chrono::year_month_day curDate);
     void writeCSVfiles();
     void writeFinalPNL();
-    void writeDebugFiles();
     void main();
     void multiMain(PriceTable* srcTable);
 };

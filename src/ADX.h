@@ -40,7 +40,6 @@ public:
     void check();
     void squareOff();
     void writeCSVfiles();
-    void writeDebugFiles();
     double max(double a,double b);
     double max(double a,double b,double c);
     void main();

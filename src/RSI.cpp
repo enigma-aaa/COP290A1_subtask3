@@ -1,4 +1,5 @@
 #include "RSI.h"
+#include "CommonCons.h"
 
 RSI::RSI(int n,int x,double oversold_threshold,double overbought_threshold,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
 :n(n),x(x),oversold_threshold(oversold_threshold),overbought_threshold(overbought_threshold),startDate(startDate),endDate(endDate),symbolName(symbolName){
@@ -11,13 +12,13 @@ void RSI::buy()
 {
     noShares++ ;
     curBal = curBal - curPrice ;
-    stats.addRow(curDate,"BUY",noShares,curPrice) ;
+    stats.addRow(curDate,"BUY",1,curPrice) ;
 }
 void RSI::sell()
 {
     noShares-- ;
     curBal = curBal + curPrice ;
-    stats.addRow(curDate,"SELL" ,noShares , curPrice) ;
+    stats.addRow(curDate,"SELL" ,1 , curPrice) ;
 }    
 void RSI::writeCashFlow(){
     flow.addRow(curDate,curBal);
@@ -52,23 +53,18 @@ void RSI::check()
     }
 }
 void RSI::writeCSVfiles(){
-    string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "cashflow.csv";
-    string csv_order_stats = baseFilePath + "order_stats.csv";
+    string baseFilePath = BASE_FILE_PATH;
+    string csv_cashflow = baseFilePath + CASHFLOW;
+    string csv_order_stats = baseFilePath + ORDER_STATS;
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);  
-}
-void RSI::writeDebugFiles(){
-    string baseFilePath = "./bin/stockCSV/";
-    string debugFile = baseFilePath + "RSI.csv";
-    dateFloat.writeToCsv(debugFile);
 }
 void RSI::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
-    string baseFilePath = "./bin/stockCSV/";
-    string pnlFileName = "finalPNL.txt";
+    string baseFilePath = BASE_FILE_PATH;
+    string pnlFileName = FINAL_PNL;
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;
@@ -80,7 +76,6 @@ void RSI::main()
     multiMain(&createTable);
     writeCSVfiles();
     writeFinalPNL();
-    writeDebugFiles();
 }
 void RSI::squareOff(){
     curBal = curBal + noShares*curPrice;

@@ -1,5 +1,7 @@
 #include <omp.h>
 #include "Best.h"
+#include "CommonCons.h"
+
 Best::Best(chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
 {
     this->endDate = endDate;    

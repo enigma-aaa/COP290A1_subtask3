@@ -1,4 +1,5 @@
 #include "LinearRegNorm.h"
+#include "CommonCons.h"
 
 LinearRegression::LinearRegression(chrono::year_month_day train_start_date, chrono::year_month_day train_end_date, chrono ::year_month_day start_date,
                                    chrono::year_month_day end_date, double p, int x, string symbolName):x(x) , p(p) , symbolName(symbolName) ,train_start_date(train_start_date),
@@ -100,6 +101,17 @@ vector<vector<double>> LinearRegression::matrixmult(vector<vector<double>> &a, v
     return ans;
 }
 
+void printMatrix(vector<vector<double>>& matrix){
+    ofstream file("./tempMatrix.txt");
+    for(int i=0;i<matrix.size();i++){
+        for(int j=0;j<matrix[i].size();j++){
+            file << matrix[i][j];
+        }
+        file << endl;
+    }
+    file.close();
+}
+
 void LinearRegression::fit()
 {
     chrono::year_month_day modified_train_start_date = subtractDate(train_start_date , 10) ;
@@ -168,7 +180,6 @@ void LinearRegression::fit()
 
     vector<vector<double>> ans = matrixmult(tempAns, Y);
 
-
     
     for (int i = 0; i < coefficients.size(); i++)
     {
@@ -196,13 +207,13 @@ void LinearRegression::buy()
 {
     noShares++;
     curBal = curBal - curPrice;
-    stats.addRow(table->rows[curLoc].date, "BUY", noShares, curPrice);
+    stats.addRow(table->rows[curLoc].date, "BUY", 1, curPrice);
 }
 void LinearRegression::sell()
 {
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(table->rows[curLoc].date, "SELL", noShares, curPrice);
+    stats.addRow(table->rows[curLoc].date, "SELL", 1, curPrice);
 }
 
 void LinearRegression::check()
@@ -226,9 +237,9 @@ void LinearRegression::check()
 }
 void LinearRegression::writeCSVfiles()
 {
-    string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "cashflow.csv";
-    string csv_order_stats = baseFilePath + "order_stats.csv";
+    string baseFilePath = BASE_FILE_PATH;
+    string csv_cashflow = baseFilePath + CASHFLOW;
+    string csv_order_stats = baseFilePath + ORDER_STATS;
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);
 }
@@ -238,8 +249,8 @@ void LinearRegression::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
-    string baseFilePath = "./bin/stockCSV/";
-    string pnlFileName = "finalPNL.txt";
+    string baseFilePath = BASE_FILE_PATH;
+    string pnlFileName = FINAL_PNL;
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;

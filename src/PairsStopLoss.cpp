@@ -1,4 +1,5 @@
 #include "PairsStopLoss.h"
+#include "CommonCons.h"
 #include <queue>
 PairsStopLoss::PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
 chrono::year_month_day startDate,
@@ -90,8 +91,8 @@ void PairsStopLoss::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
-    string baseFilePath = "./bin/stockCSV/";
-    string pnlFileName = "finalPNL.txt";
+    string baseFilePath = BASE_FILE_PATH;
+    string pnlFileName = FINAL_PNL;
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;
@@ -220,10 +221,10 @@ void PairsStopLoss::squareOff(){
 
 void PairsStopLoss::writeCSVfiles()
 {
-    string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "cashflow.csv";
-    string csv_order_stats1 = baseFilePath + "order_stats1.csv";
-    string csv_order_stats2 = baseFilePath + "order_stats2.csv";
+    string baseFilePath = BASE_FILE_PATH;
+    string csv_cashflow = baseFilePath + CASHFLOW;
+    string csv_order_stats1 = baseFilePath + "order_statistics_1.csv";
+    string csv_order_stats2 = baseFilePath + "order_statistics_2.csv";
     flow.writeToCsv(csv_cashflow);
     stats1.writeToCsv(csv_order_stats1);
     stats2.writeToCsv(csv_order_stats2);        

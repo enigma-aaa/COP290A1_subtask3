@@ -3,7 +3,7 @@ Flags=-std=c++20 -c -g
 BinFolder=./bin/
 SrcFolder=./src/
 
-all:main
+all:main 
 ifeq ($(strategy),BASIC)
 	./main $(strategy) $(symbol) $(n) $(x) $(start_date) $(end_date)
 endif
@@ -12,10 +12,10 @@ ifeq ($(strategy),DMA)
 endif
 ifeq ($(strategy),DMA++)
 	echo "DMA++"
-	./main $(strategy) $(symbol) $(x) $(p) $(n) $(max_hold_days) $(c1) $(c2) $(start_date) $(end_date) > temp.txt
+	./main $(strategy) $(symbol) $(x) $(p) $(n) $(max_hold_days) $(c1) $(c2) $(start_date) $(end_date)
 endif
 ifeq ($(strategy),MACD)
-	./main $(strategy) $(symbol) $(x) $(start_date) $(end_date) > MACDtemp2.txt
+	./main $(strategy) $(symbol) $(x) $(start_date) $(end_date)
 endif
 ifeq ($(strategy),RSI)
 	./main $(strategy) $(symbol) $(x) $(n) $(oversold_threshold) $(overbought_threshold) $(start_date) $(end_date)

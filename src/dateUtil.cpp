@@ -1,4 +1,5 @@
 #include "dateUtil.h"
+#include "CommonCons.h"
 #include <vector>
 
 PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chrono::year_month_day endDate){
