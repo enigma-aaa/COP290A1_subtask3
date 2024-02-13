@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "dateUtil.h"
+#include "CommonCons.h"
 #include <cmath>
 
 class LinearRegression{

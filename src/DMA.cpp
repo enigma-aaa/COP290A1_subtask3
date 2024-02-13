@@ -1,4 +1,6 @@
 #include "DMA.h"
+#include "CommonCons.h"
+
 DMA::DMA(int n, int x, double p, chrono::year_month_day startDate, chrono::year_month_day endDate, string symbolName):
 n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
 {
@@ -62,23 +64,18 @@ void DMA::squareOff()
 }
 void DMA::writeCSVfiles()
 {
-    string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "daily_pnl.csv";
-    string csv_order_stats = baseFilePath + "order_statistics.csv";
+    string baseFilePath = BASE_FILE_PATH;
+    string csv_cashflow = baseFilePath + CASHFLOW;
+    string csv_order_stats = baseFilePath + ORDER_STATS;
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);        
-}
-void DMA::writeDebugFiles(){
-    string baseFilePath = "./bin/stockCSV/";
-    string debugFile = baseFilePath + "DMA.csv";
-    dateFloat.writeToCsv(debugFile);
 }
 void DMA::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
-    string baseFilePath = "./bin/stockCSV/";
-    string pnlFileName = "finalPNL.txt";
+    string baseFilePath = BASE_FILE_PATH;
+    string pnlFileName = FINAL_PNL;
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;
@@ -90,7 +87,6 @@ void DMA::main()
     multiMain(&createTable);
     writeCSVfiles();
     writeFinalPNL();
-    writeDebugFiles();
 }
 void DMA::multiMain(PriceTable* srcTable)
 {

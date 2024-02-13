@@ -1,4 +1,5 @@
 #include "LinearRegNorm.h"
+#include "CommonCons.h"
 
 LinearRegression::LinearRegression(chrono::year_month_day train_start_date, chrono::year_month_day train_end_date, chrono ::year_month_day start_date,
                                    chrono::year_month_day end_date, double p, int x, string symbolName):x(x) , p(p) , symbolName(symbolName) ,train_start_date(train_start_date),
@@ -219,9 +220,9 @@ void LinearRegression::check()
 }
 void LinearRegression::writeCSVfiles()
 {
-    string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "cashflow.csv";
-    string csv_order_stats = baseFilePath + "order_stats.csv";
+    string baseFilePath = BASE_FILE_PATH;
+    string csv_cashflow = baseFilePath + CASHFLOW;
+    string csv_order_stats = baseFilePath + ORDER_STATS;
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);
 }
@@ -231,8 +232,8 @@ void LinearRegression::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
-    string baseFilePath = "./bin/stockCSV/";
-    string pnlFileName = "finalPNL.txt";
+    string baseFilePath = BASE_FILE_PATH;
+    string pnlFileName = FINAL_PNL;
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;

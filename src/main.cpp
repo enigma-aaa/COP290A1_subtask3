@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include "CommonCons.h"
 #include "parser.h"
 #include "dateUtil.h"
 #include "ADX.h"
