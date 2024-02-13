@@ -6,6 +6,7 @@ n(n),x(x),adx_threshold(adx_threshold),startDate(startDate),endDate(endDate),sym
     modStartDate = subtractDate(startDate,2*n);
     alphaATR = 2.0/((double)(n+1));
     table = nullptr;
+    dateFloat = DateFloat("ADX");
 }
 ADXStrat::ADXStrat(){}
 void ADXStrat::buy(){
@@ -33,6 +34,10 @@ void ADXStrat::first(int startDateLoc){
 void ADXStrat::writeCashFlow(chrono::year_month_day curDate){
     flow.addRow(curDate,curBal);
 }
+void ADXStrat::writeADX(chrono::year_month_day curDate){
+    dateFloat.addRow(curDate,ADX);
+}
+
 void ADXStrat::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
@@ -76,6 +81,12 @@ void ADXStrat::writeCSVfiles()
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);        
 }
+void ADXStrat::writeDebugFiles()
+{
+    string baseFilePath = "./bin/stockCSV/";
+    string debugFile = baseFilePath + "ADX.csv";
+    dateFloat.writeToCsv(debugFile);
+}
 double ADXStrat::max(double a,double b){
     if(a > b){
         return a;
@@ -89,6 +100,7 @@ void ADXStrat::main(){
     PriceTable createTable = getPriceTable(symbolName,modStartDate,endDate);
     multiMain(&createTable);
     writeCSVfiles();
+    writeDebugFiles();
     writeFinalPNL();
 }
 void ADXStrat::multiMain(PriceTable* srcTable){
@@ -135,6 +147,7 @@ void ADXStrat::multiMain(PriceTable* srcTable){
             ADX = 0;
         }
         writeCashFlow(curRow.date);
+        writeADX(curRow.date);
     }
     //writeCSVfiles();
     squareOff();

@@ -19,6 +19,7 @@ public:
     PriceTable* table;
     CashFlow flow;
     OrderStats stats;
+    DateFloat dateFloat;
 
     double curPrice;
     double curGainSum;
@@ -34,6 +35,7 @@ public:
     void check();
     void writeCSVfiles();
     void writeFinalPNL();
+    void writeDebugFiles();
     void main();
     void multiMain(PriceTable* srcTable);
     void squareOff();

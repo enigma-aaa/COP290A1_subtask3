@@ -108,12 +108,30 @@ void CashFlow::writeToCsv(string filename)
     }    
     csv_file.close() ;
 }
+void DateFloat::writeToCsv(string filename){
+    ofstream csv_file;
+    csv_file.open(filename);
+    string Header = "Date,"+floatHeading;
+    csv_file << Header << endl;
+    string line;
+    for(auto& x:rows)
+    {
+        line = x.getString();
+        csv_file << line;
+    }
+    csv_file.close();
+}
 void CashFlow::addRow(chrono::year_month_day date , double curBal)
 {
     CashFlowRows a = CashFlowRows(date,curBal) ;
     rows.push_back(a) ;
 }
-
+void DateFloat::addRow(chrono::year_month_day date,double val){
+    DateFloatRow a = DateFloatRow(date,val);
+    rows.push_back(a);
+}
+DateFloat::DateFloat(){}
+DateFloat::DateFloat(string floatHeading){this->floatHeading = floatHeading;}
 PriceTableRow PriceTableRow::getRowObj(string row)
 {
     PriceTableRow temp ;
@@ -146,8 +164,17 @@ string PriceTableRow::getString(){
     result += to_string(noTrades) + ",";
     return result;
 }
+string DateFloatRow::getString(){
+    string result = "";
+    result += date2StrYMD(date) +",";
+    result += to_string(val) + "\n";
+    return result;
+}
 
-
+DateFloatRow::DateFloatRow(chrono::year_month_day date,double val){
+    this->date = date;
+    this->val = val;
+}
 void PriceTable::read_csv(string filename)
 {
     ifstream csv_file ;
@@ -162,7 +189,6 @@ void PriceTable::read_csv(string filename)
         rows.push_back(temp) ;
     }
 }
-
 /*
 PriceTable::PriceTable(PriceTable&& other):rows(std::move(other.rows)){
     //cout << "called move constructor of price table" << endl;    

@@ -64,3 +64,20 @@ class PriceTable {
     PriceTable(const PriceTable& other);
     void read_csv(string filename);
 } ;
+
+class DateFloatRow{
+public: 
+    chrono::year_month_day date;
+    double val;
+    DateFloatRow(chrono::year_month_day date,double val);
+    string getString();
+};
+class DateFloat{
+    public:
+        vector<DateFloatRow> rows;
+        string floatHeading;
+    DateFloat();
+    DateFloat(string floatHeading);
+    void writeToCsv(string filename);
+    void addRow(chrono::year_month_day date,double val);
+};

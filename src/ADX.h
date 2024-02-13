@@ -15,6 +15,7 @@ public:
 
     PriceTable* table;
     CashFlow flow;
+    DateFloat dateFloat;
     OrderStats stats;
 
     chrono::year_month_day curDate;
@@ -34,10 +35,12 @@ public:
     void sell(); 
     void first(int startDateLoc);
     void writeCashFlow(chrono::year_month_day curDate);
+    void writeADX(chrono::year_month_day curDate);
     void writeFinalPNL();
     void check();
     void squareOff();
     void writeCSVfiles();
+    void writeDebugFiles();
     double max(double a,double b);
     double max(double a,double b,double c);
     void main();
