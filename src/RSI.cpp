@@ -92,7 +92,6 @@ void RSI::multiMain(PriceTable* srcTable)
             break;
         }
     }
-    if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
 
     firstPrice(startDateLoc);
     for(int i=startDateLoc;i<table->rows.size();i++){

@@ -156,11 +156,12 @@ void DMAPlus::multiMain(PriceTable* srcTable){
             break;
         }
     }
-    if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
 
     int startDate_n_Loc = startDateLoc - n;
     //add a check to first price
     firstPrice(startDate_n_Loc);
+    curDate = table->rows[startDateLoc].date;
+    writeCashFlow(curDate);
     //cout << "Initial AMA is:" << AMA <<" smoothing:factor" << smoothingFactor<< endl;
     for(int i=startDateLoc+1;i<table->rows.size();i++){
         curLoc = i;

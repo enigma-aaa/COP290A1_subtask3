@@ -7,7 +7,6 @@ n(n),x(x),p(p),startDate(startDate),endDate(endDate),symbolName(symbolName)
     modStartDate = subtractDate(startDate, max(2 * n,30));
     noShares = 0 ;
     table = nullptr;
-    dateFloat = DateFloat("DMA");
 }
 DMA::DMA() {}
 void DMA::buy(chrono :: year_month_day date)
@@ -35,7 +34,6 @@ void DMA::check()
 
     /*Both buy and sell may occur here because of greater than or equal to*/
     double deviation = (curPrice - curMean)/sd;
-    dateFloat.addRow(table->rows[curLoc].date,deviation);
     if(curPrice >= curMean + p*sd)
     {
         //buy
@@ -101,10 +99,6 @@ void DMA::multiMain(PriceTable* srcTable)
             startDateLoc = i;
             break;
         }
-    }
-    if (startDateLoc == -1)
-    {
-        cout << "start date not located in the table for some reason" << endl;
     }
     /*Have to ask sir since current day has to be included might have to do n-1 here*/
     int startDate_n_Loc = startDateLoc - n;

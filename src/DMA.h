@@ -16,7 +16,6 @@ public:
     PriceTable* table;
     CashFlow flow;
     OrderStats stats;
-    DateFloat dateFloat;
 
     double curPrice;
     double cursquaredSum;
