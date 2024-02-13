@@ -160,6 +160,8 @@ void DMAPlus::multiMain(PriceTable* srcTable){
     int startDate_n_Loc = startDateLoc - n;
     //add a check to first price
     firstPrice(startDate_n_Loc);
+    curDate = table->rows[startDateLoc].date;
+    writeCashFlow(curDate);
     //cout << "Initial AMA is:" << AMA <<" smoothing:factor" << smoothingFactor<< endl;
     for(int i=startDateLoc+1;i<table->rows.size();i++){
         curLoc = i;
