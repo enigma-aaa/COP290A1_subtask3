@@ -71,7 +71,7 @@ vector<vector<double>> LinearRegression::inverse(vector<vector<double>> &v)
 vector<vector<double>> LinearRegression::transpose(vector<vector<double>> &v)
 {
     vector<vector<double>> ans;
-    cout<<"inside transpose "<<v.size()<<endl;
+    // cout<<"inside transpose "<<v.size()<<endl;
     for (int j = 0; j < v[0].size(); j++)
     {
         vector<double> temp;
@@ -153,14 +153,14 @@ void LinearRegression::fit()
         Y.push_back({train_table.rows[i].close});
     }
 
-    for(auto x : X)   
-    {
-        for(auto y : x)
-        {
-            cout<<y<<" ";
-        }
-        cout<<endl;
-    }
+    // for(auto x : X)   
+    // {
+    //     for(auto y : x)
+    //     {
+    //         cout<<y<<" ";
+    //     }
+    //     cout<<endl;
+    // }
 
 
     vector<vector<double>> Xt = transpose(X);
@@ -219,7 +219,7 @@ void LinearRegression::sell()
 void LinearRegression::check()
 {
     double predicted_price = predict(curLoc);
-    cout<<predicted_price<<" "<<curPrice<<endl;
+    // cout<<predicted_price<<" "<<curPrice<<endl;
     if (predicted_price >= (curPrice + curPrice * p / 100))
     {
         if (noShares < x)

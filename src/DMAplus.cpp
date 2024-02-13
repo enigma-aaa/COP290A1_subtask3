@@ -90,11 +90,11 @@ int DMAPlus::handleMaxHold(){
     return 0;
 }
 int DMAPlus::check(){
-    double perCentDiff = ((curPrice - AMA)*100)/AMA;
     //cofirm p given here as pre multiplied as 100
     //assuming p is non zero
-    cout<<AMA<<endl;
-    if(curPrice >= AMA + ((AMA*p)/100)) 
+    // cout<<AMA<<endl;
+    cout<<curPrice<<" "<<AMA<<" "<<p<<" " <<endl;
+    if(curPrice >= (AMA + ((AMA*p)/100))) 
     {
         if(noShares < x)
         {
@@ -106,7 +106,7 @@ int DMAPlus::check(){
             return 2 ;
         }
     }
-    if(curPrice <= AMA - ((AMA * p) /100))
+    if(curPrice <= (AMA - ((AMA * p) /100)))
     {
         if(noShares > -x)
         {
@@ -185,17 +185,36 @@ void DMAPlus::multiMain(PriceTable* srcTable){
         AMA = temp ;
         int shareDelta1 =  check();
         int shareDelta2 = handleMaxHold();
-        if(shareDelta1 == 2 && shareDelta2 == )
+        cout<<"shareDelta1 "<<shareDelta1<<" shareDelta2"<<shareDelta2<<endl;
         int shareDelta = shareDelta1 + shareDelta2;
+        if(shareDelta1 == 2 && shareDelta2 == -1)
+        {
+            buy() ;
+            shareDelta = 0 ;
+        }
+        else if(shareDelta1  == -2 && shareDelta2 == 1)
+        {
+            cout<<"here"<<endl;
+            sell() ;
+            shareDelta = 0 ;
+        }
+        else if(shareDelta1 == 2)
+        {
+            shareDelta = 0 ;
+        }
+        else if(shareDelta1 == -2)
+        {
+            shareDelta = 0;
+        }
         if(shareDelta > 0){
             stats.addRow(curDate,"BUY",shareDelta,curPrice);
         }else if(shareDelta < 0){
             stats.addRow(curDate,"SELL",-shareDelta,curPrice);
         }
         writeCashFlow();
-        cout << "AMA: " << AMA << " curDate "; printDate(curDate);
-        cout << " noShares: " << noShares << "smoothing factor: " << smoothingFactor << " curPrice: " << curPrice << " factor: " << factor << endl;
-        cout << "i is:" << i << " curBal is:" << curBal  << endl;
+        // cout << "AMA: " << AMA << " curDate "; printDate(curDate);
+        // cout << " noShares: " << noShares << "smoothing factor: " << smoothingFactor << " curPrice: " << curPrice << " factor: " << factor << endl;
+        // cout << "i is:" << i << " curBal is:" << curBal  << endl;
     }
     squareOff();
 }

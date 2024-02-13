@@ -50,7 +50,7 @@ void Pairs::check(){
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
     curZscore = (curSpread - curMean)/curDev;
-    cout << "zScore is:" << curZscore <<" "<< threshold << endl;
+    // cout << "zScore is:" << curZscore <<" "<< threshold << endl;
     if(curZscore > threshold){
         if(noShares > -x){
             sell();

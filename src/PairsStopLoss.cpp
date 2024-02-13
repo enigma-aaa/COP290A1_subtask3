@@ -13,7 +13,7 @@ endDate(endDate),symbol1(symbol1),symbol2(symbol2){
 }
 
 void PairsStopLoss::buy(){
-    cout<<"inside buying "<<shortSellStocks.size()<<" "<<boughtStocks.size()<<endl;
+    // cout<<"inside buying "<<shortSellStocks.size()<<" "<<boughtStocks.size()<<endl;
     if(shortSellStocks.size()!=0)
     {
         shortSellStocks.erase(shortSellStocks.begin()) ;
@@ -22,8 +22,8 @@ void PairsStopLoss::buy(){
     {
         Node temp(curLoc , curMean , curDev , stop_loss_threshold) ;
         boughtStocks.insert(temp) ;
-        cout<<"conditions "<<temp.condition1<<" "<<temp.condition2<<" "<<curMean<<" "<<curDev<<" "<<stop_loss_threshold<<endl;
-        cout<<"Pushed into boughtStocks "<<boughtStocks.size()<<endl;
+        // cout<<"conditions "<<temp.condition1<<" "<<temp.condition2<<" "<<curMean<<" "<<curDev<<" "<<stop_loss_threshold<<endl;
+        // cout<<"Pushed into boughtStocks "<<boughtStocks.size()<<endl;
     }
     curBal = curBal -curPrice1 + curPrice2 ;
     noShares++ ;
@@ -43,7 +43,7 @@ void PairsStopLoss::buy(){
 }
 
 void PairsStopLoss::sell(){
-    cout<<"inside buying "<<shortSellStocks.size()<<" "<<boughtStocks.size()<<endl;
+    // cout<<"inside buying "<<shortSellStocks.size()<<" "<<boughtStocks.size()<<endl;
     if(boughtStocks.size()!=0)
     {
         boughtStocks.erase(boughtStocks.begin()) ; 
@@ -53,8 +53,8 @@ void PairsStopLoss::sell(){
         Node temp(curLoc , curMean ,curDev , stop_loss_threshold) ;
         shortSellStocks.insert(temp);
         
-        cout<<"conditions "<<temp.condition1<<" "<<temp.condition2<<" "<<curMean<<" "<<curDev<<" "<<stop_loss_threshold<<endl;
-        cout<<"Pushed into shortSellStocks "<<shortSellStocks.size()<<endl;
+        // cout<<"conditions "<<temp.condition1<<" "<<temp.condition2<<" "<<curMean<<" "<<curDev<<" "<<stop_loss_threshold<<endl;
+        // cout<<"Pushed into shortSellStocks "<<shortSellStocks.size()<<endl;
     }
     curBal = curBal + curPrice1 - curPrice2 ;
     noShares-- ;
@@ -103,7 +103,7 @@ int PairsStopLoss::check(){
     curDev = curSqSum/n - curMean*curMean;   
     curDev = sqrt(curDev); 
     curZscore = (curSpread - curMean)/curDev;
-    cout << "zScore is:" << curZscore << endl;
+    // cout << "zScore is:" << curZscore << endl;
     if(curZscore > threshold){
         if(noShares > -x){
             sell() ;
@@ -151,7 +151,7 @@ int PairsStopLoss:: checkForThresholds()
     {
         if(curSpread > (*it).condition1 )
         {
-            cout<<"removing "<<endl;
+            // cout<<"removing "<<endl;
             curBal = curBal - curPrice1 + curPrice2 ;
             stocksCrossed++ ;
             noShares++ ;
@@ -159,7 +159,7 @@ int PairsStopLoss:: checkForThresholds()
         }
         else if(curSpread < (*it).condition2)
         {
-            cout<<"removing "<<endl;
+            // cout<<"removing "<<endl;
             curBal = curBal + curPrice1 - curPrice2 ;
             stocksCrossed-- ;
             noShares-- ;
