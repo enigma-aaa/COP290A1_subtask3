@@ -7,7 +7,6 @@ MACDStrat::MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_d
     modStartDate = subtractDate(startDate,max(2*n2,30));
     // cout << "modStartDate is: year:" << int(modStartDate.year()) << " month:" << unsigned(modStartDate.month()) << " day:" << unsigned(modStartDate.day()) << endl;
     table = nullptr;
-    dateFloat = DateFloat("Signal");
 }
 MACDStrat::MACDStrat() {}
 void MACDStrat::buy(){
@@ -99,7 +98,6 @@ void MACDStrat::multiMain(PriceTable* srcTable){
         shortEWM = alphaShort*(curPrice - shortEWM) + shortEWM;
         MACD = shortEWM - longEWM;
         signal = alphaSig*(MACD - signal) + signal;
-        dateFloat.addRow(curDate,MACD -signal);
         check();
         //cout<<"signal "<<signal<<" macd "<<MACD<<" ";
         //printDate(curDate); cout << endl;

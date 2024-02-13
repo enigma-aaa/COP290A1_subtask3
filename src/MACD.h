@@ -23,7 +23,6 @@ public:
     PriceTable* table;
     CashFlow flow;
     OrderStats stats;
-    DateFloat dateFloat;
 
     double curPrice;
     chrono::year_month_day curDate;
