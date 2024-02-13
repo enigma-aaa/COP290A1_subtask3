@@ -36,8 +36,8 @@ else
 	./main $(strategy) $(symbol1) $(symbol2) $(x) $(n) $(threshold) $(start_date) $(end_date) $(stop_loss_threshold)
 endif
 endif
-main: ./bin/main.o ./bin/parser.o ./bin/ADX.o ./bin/basicStart.o ./bin/DMA.o ./bin/DMAplus.o ./bin/MACD.o ./bin/RSI.o ./bin/dateUtil.o ./bin/linearRegNorm.o ./bin/Best.o ./bin/Pairs.o
-	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o $(BinFolder)linearRegNorm.o $(BinFolder)Best.o $(BinFolder)Pairs.o -o main
+main: ./bin/main.o ./bin/parser.o ./bin/ADX.o ./bin/basicStart.o ./bin/DMA.o ./bin/DMAplus.o ./bin/MACD.o ./bin/RSI.o ./bin/dateUtil.o ./bin/linearRegNorm.o ./bin/Best.o ./bin/Pairs.o ./bin/PairsStopLoss.o
+	$(Compiler) $(BinFolder)main.o $(BinFolder)parser.o $(BinFolder)ADX.o $(BinFolder)basicStart.o $(BinFolder)DMA.o $(BinFolder)DMAplus.o $(BinFolder)MACD.o $(BinFolder)RSI.o $(BinFolder)dateUtil.o $(BinFolder)linearRegNorm.o $(BinFolder)Best.o $(BinFolder)Pairs.o $(BinFolder)PairsStopLoss.o -o main
 ./bin/main.o: $(SrcFolder)main.cpp
 	$(Compiler) $(Flags) $(SrcFolder)main.cpp -o $(BinFolder)main.o
 ./bin/parser.o: $(SrcFolder)parser.cpp
@@ -67,7 +67,7 @@ clearAll: clearObjs clearExe
 	$(Compiler) $(Flags) $(SrcFolder)Best.cpp -o $(BinFolder)Best.o
 ./bin/Pairs.o: $(SrcFolder)Pairs.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)Pairs.cpp -o $(BinFolder)Pairs.o
-PairsStopLoss.o: $(SrcFolder)PairsStopLoss.cpp 
+./bin/PairsStopLoss.o: $(SrcFolder)PairsStopLoss.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)PairsStopLoss.cpp -o $(BinFolder)PairsStopLoss.o
 clearObjs:
 	rm -rf $(BinFolder)*
