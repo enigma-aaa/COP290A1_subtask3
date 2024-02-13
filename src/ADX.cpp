@@ -13,12 +13,12 @@ ADXStrat::ADXStrat(){}
 void ADXStrat::buy(){
     noShares++;
     curBal = curBal - curPrice;
-    stats.addRow(curDate,"BUY",noShares,curPrice);
+    stats.addRow(curDate,"BUY",1,curPrice);
 }
 void ADXStrat::sell(){
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(curDate,"SELL",noShares,curPrice);
+    stats.addRow(curDate,"SELL",1,curPrice);
 } 
 void ADXStrat::first(int startDateLoc){
     int startDate_n_Loc = startDateLoc -n;
@@ -63,16 +63,8 @@ void ADXStrat::check(){
     }
 }
 void ADXStrat::squareOff(){
-    if(noShares > 0){
-        curBal = curBal + noShares * curPrice;
-        stats.addRow(table->rows.back().date,"SELL",noShares,curPrice);
-        noShares = 0;
-    }
-    if(noShares < 0){
-        curBal = curBal + noShares * curPrice;
-        stats.addRow(table->rows.back().date,"BUY",noShares,curPrice);
-        noShares = 0;
-    }
+    curBal = curBal + noShares * curPrice;
+    noShares = 0;
 }
 void ADXStrat::writeCSVfiles()
 {
@@ -102,7 +94,7 @@ void ADXStrat::multiMain(PriceTable* srcTable){
     //table = getPriceTable(symbolName,modStartDate,endDate);
     table = srcTable;
     curPrice = 0;
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     for(int i=0;i<table->rows.size();i++){
         if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
@@ -113,6 +105,7 @@ void ADXStrat::multiMain(PriceTable* srcTable){
         cout << "start date not located in table for some reason" << endl;
     }
     first(startDateLoc);
+    writeCashFlow(table->rows[startDateLoc].date);
     //may have to change starting index to deal with threshold=0
     for(int i=startDateLoc+1;i<table->rows.size();i++){
         curPrice = table->rows[i].close;

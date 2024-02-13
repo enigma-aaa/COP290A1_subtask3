@@ -98,7 +98,7 @@ void Basic::main(){
 void Basic::multiMain(PriceTable* srcTable){
     table = srcTable;
     int tableSize = table->rows.size();
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     for(int i=0;i<table->rows.size();i++){
         if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
@@ -113,7 +113,7 @@ void Basic::multiMain(PriceTable* srcTable){
     double firstprice = table->rows[startDate_n_Loc].close;
     firstPrice(firstprice);
 
-    
+
     for(int i=startDate_n_Loc+1;i<table->rows.size();i++){
         double newPrice = table->rows[i].close;
         curLoc = i;

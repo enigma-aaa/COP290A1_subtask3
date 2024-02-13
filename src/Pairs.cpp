@@ -82,7 +82,7 @@ void Pairs::main(){
     table2 = &createTable2;
     curPrice1 = 0;
     curPrice2 = 0;
-    int startDateLoc = -1;
+    int startDateLoc = table1->rows.size();
     for(int i=0;i<table1->rows.size();i++){
         if(grtrEqual(table1->rows[i].date,startDate)){
             startDateLoc = i;

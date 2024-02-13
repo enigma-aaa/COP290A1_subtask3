@@ -13,12 +13,12 @@ MACDStrat::MACDStrat() {}
 void MACDStrat::buy(){
     noShares++;
     curBal = curBal - curPrice;
-    stats.addRow(curDate,"BUY",noShares,curPrice);
+    stats.addRow(curDate,"BUY",1,curPrice);
 }
 void MACDStrat::sell(){
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(curDate,"SELL",noShares,curPrice);
+    stats.addRow(curDate,"SELL",1,curPrice);
 }
 void MACDStrat::check(){
     if(MACD > signal){
@@ -81,7 +81,7 @@ void MACDStrat::main(){
 void MACDStrat::multiMain(PriceTable* srcTable){
     table = srcTable;
     curPrice = 0;
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     for(int i=0;i<table->rows.size();i++){
         if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;

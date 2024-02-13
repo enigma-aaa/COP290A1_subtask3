@@ -101,8 +101,8 @@ vector<vector<double>> LinearRegression::matrixmult(vector<vector<double>> &a, v
     return ans;
 }
 
-void printMatrix(vector<vector<double>>& matrix){
-    ofstream file("./tempMatrix.txt");
+void printMatrix(vector<vector<double>>& matrix,string pnlFileName){
+    ofstream file(pnlFileName);
     for(int i=0;i<matrix.size();i++){
         for(int j=0;j<matrix[i].size();j++){
             file << matrix[i][j];
@@ -116,7 +116,7 @@ void LinearRegression::fit()
 {
     chrono::year_month_day modified_train_start_date = subtractDate(train_start_date , 10) ;
     train_table = getPriceTable(symbolName, modified_train_start_date, train_end_date);
-    int startLoc= -1 ;
+    int startLoc= train_table.rows.size();
 
     for(int i = 0 ; i<train_table.rows.size() ; i++)
     {
@@ -171,15 +171,16 @@ void LinearRegression::fit()
     vector<vector<double>> XXtInv = inverse(XXt);
 
     vector<vector<double>> check1 = matrixmult(XXtInv,XXt) ;
-    
+    printMatrix(XXtInv,"XXtinv.txt");
 
 
 
 
     vector<vector<double>> tempAns = matrixmult(XXtInv, Xt);
+    printMatrix(tempAns,"tempAns.txt");
 
     vector<vector<double>> ans = matrixmult(tempAns, Y);
-
+    printMatrix(ans,"finalAns.txt");
     
     for (int i = 0; i < coefficients.size(); i++)
     {
@@ -278,7 +279,7 @@ void LinearRegression::main()
 void LinearRegression::multiMain(PriceTable* srcTable){
     table = srcTable;
 
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     for (int i = 0; i < table->rows.size(); i++)
     {
         if(grtrEqual(table->rows[i].date,start_date)){
