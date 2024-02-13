@@ -156,7 +156,6 @@ void DMAPlus::multiMain(PriceTable* srcTable){
             break;
         }
     }
-    if(startDateLoc == -1){ cout << "start date not located in the table" << endl;}
 
     int startDate_n_Loc = startDateLoc - n;
     //add a check to first price
