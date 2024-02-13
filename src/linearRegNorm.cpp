@@ -278,7 +278,7 @@ void LinearRegression::main()
 void LinearRegression::multiMain(PriceTable* srcTable){
     table = srcTable;
 
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     for (int i = 0; i < table->rows.size(); i++)
     {
         if(grtrEqual(table->rows[i].date,start_date)){

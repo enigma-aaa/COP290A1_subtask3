@@ -93,7 +93,7 @@ void DMA::multiMain(PriceTable* srcTable)
     curBal = 0;
     table = srcTable;
     int tableSize = table->rows.size();
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     curPrice = 0 ;
     for (int i = 0; i < table->rows.size(); i++)
     {

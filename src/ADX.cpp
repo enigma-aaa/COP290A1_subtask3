@@ -102,7 +102,7 @@ void ADXStrat::multiMain(PriceTable* srcTable){
     //table = getPriceTable(symbolName,modStartDate,endDate);
     table = srcTable;
     curPrice = 0;
-    int startDateLoc = -1;
+    int startDateLoc = table->rows.size();
     for(int i=0;i<table->rows.size();i++){
         if(grtrEqual(table->rows[i].date,startDate)){
             startDateLoc = i;
