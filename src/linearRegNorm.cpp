@@ -122,12 +122,12 @@ void LinearRegression::fit()
     {
         if(grtrEqual(train_table.rows[i].date,train_start_date)){
             startLoc = i;
-            cout << "startDateLOc is:" << startLoc << endl;
+            //cout << "startDateLOc is:" << startLoc << endl;
             break;
         }
     }
     vector<vector<double>> X;
-    cout << "startLoc in linear Regression is:" << startLoc << endl;
+    //cout << "startLoc in linear Regression is:" << startLoc << endl;
 
     vector<double> temp;
 
@@ -185,9 +185,9 @@ void LinearRegression::fit()
     for (int i = 0; i < coefficients.size(); i++)
     {
         coefficients[i] = ans[i][0];
-        cout<<coefficients[i]<<" ";
+        //cout<<coefficients[i]<<" ";
     }
-    cout<<endl;
+    //cout<<endl;
 }
 
 double LinearRegression::predict(int tableLoc)
@@ -265,11 +265,11 @@ void LinearRegression::squareOff()
 void LinearRegression::main()
 {
     fit() ;
-    for(auto x : coefficients)
-    {
-        cout<<x<<" ";
-    }
-    cout<<endl;
+    //for(auto x : coefficients)
+    //{
+    //    cout<<x<<" ";
+    //}
+    //cout<<endl;
     PriceTable createTable = getPriceTable(symbolName, mod_start_date, end_date);
     multiMain(&createTable);
     writeCSVfiles() ;
