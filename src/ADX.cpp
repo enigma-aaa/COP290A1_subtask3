@@ -135,7 +135,6 @@ void ADXStrat::multiMain(PriceTable* srcTable){
             ADX = 0;
         }
         writeCashFlow(curRow.date);
-        writeADX(curRow.date);
     }
     //writeCSVfiles();
     squareOff();
