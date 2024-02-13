@@ -67,6 +67,8 @@ clearAll: clearObjs clearExe
 	$(Compiler) $(Flags) $(SrcFolder)Best.cpp -o $(BinFolder)Best.o
 ./bin/Pairs.o: $(SrcFolder)Pairs.cpp 
 	$(Compiler) $(Flags) $(SrcFolder)Pairs.cpp -o $(BinFolder)Pairs.o
+PairsStopLoss.o: $(SrcFolder)PairsStopLoss.cpp 
+	$(Compiler) $(Flags) $(SrcFolder)PairsStopLoss.cpp -o $(BinFolder)PairsStopLoss.o
 clearObjs:
 	rm -rf $(BinFolder)*
 clearExe:

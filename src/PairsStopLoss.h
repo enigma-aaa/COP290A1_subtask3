@@ -3,6 +3,23 @@
 #include "dateUtil.h"
 #include <cmath>
 #include <iomanip>
+#include <set>
+class Node{
+    public : 
+    int buy_sell_location ;
+    double condition1 ;
+    double condition2 ;
+    Node(int i , double curMean , double curSD , double stopLossThreshold)
+    {
+        buy_sell_location = i ;
+        condition1 = stopLossThreshold*curSD + curMean ;
+        condition2 = -1*stopLossThreshold*curSD + curMean ;
+    }
+    bool operator<(const Node& other) const{
+        return buy_sell_location<other.buy_sell_location ;
+    }
+} ;
+
 class PairsStopLoss{
 public:
     int x;
@@ -10,7 +27,9 @@ public:
     int noShares = 0;
     double threshold;
     double stop_loss_threshold;
-
+    int curLoc ;
+    set<Node> boughtStocks ;
+    set<Node> shortSellStocks ;
     string symbol1,symbol2;
     chrono::year_month_day startDate,endDate;
     chrono::year_month_day modStartDate;
@@ -20,11 +39,7 @@ public:
     CashFlow flow;
     OrderStats stats1;
     OrderStats stats2;
-    queue<double> buyMean,buyStandDev;
-    queue<double> sellMean,sellStandDev;
-    priority_queue<double> maxHeap ;
-    priority_queue<double,vector<double>,greater<double>> minHeap ;
-    
+
     chrono::year_month_day curDate;
     PairsStopLoss(int x,int n,double threshold,double stop_loss_threshold,
     chrono::year_month_day startDate,chrono::year_month_day endDate,string symbol1,string symbol2);
@@ -45,7 +60,8 @@ public:
     void first(int startDateLoc);
     void writeCashFlow(chrono::year_month_day curDate);
     void writeFinalPNL();
-    void check();
+    int check();
+    int checkForThresholds() ;
     void squareOff();
     void writeCSVfiles();
     void main();

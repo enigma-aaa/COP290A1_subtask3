@@ -93,6 +93,7 @@ int DMAPlus::check(){
     double perCentDiff = ((curPrice - AMA)*100)/AMA;
     //cofirm p given here as pre multiplied as 100
     //assuming p is non zero
+    cout<<AMA<<endl;
     if(perCentDiff >= p){
         if(noShares < x){
             buy();

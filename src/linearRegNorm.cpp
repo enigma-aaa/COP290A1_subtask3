@@ -142,13 +142,20 @@ void LinearRegression::fit()
         Y.push_back({train_table.rows[i].close});
     }
 
+    for(auto x : X)   
+    {
+        for(auto y : x)
+        {
+            cout<<y<<" ";
+        }
+        cout<<endl;
+    }
 
 
     vector<vector<double>> Xt = transpose(X);
 
 
     vector<vector<double>> XXt = matrixmult(Xt, X);
-
 
     vector<vector<double>> XXtInv = inverse(XXt);
 
