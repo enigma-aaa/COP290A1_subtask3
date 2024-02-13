@@ -87,9 +87,6 @@ void MACDStrat::multiMain(PriceTable* srcTable){
             break;
         }
     }
-    if(startDateLoc == -1){
-        cout << "start date not located in table for some reason" << endl;
-    }
     first(startDateLoc);
     //have to check start indices here also
     //handling startDateLoc already in check function have to start with startDateLoc+1
