@@ -84,9 +84,9 @@ CashFlowRows::CashFlowRows(chrono::year_month_day date , double price)
 string CashFlowRows::getString()
 {
     string temp = ""; 
-    temp+= to_string(unsigned(date.day()));
+    temp+= padNum(to_string(unsigned(date.day())),2);
     temp+= '/' ;
-    temp+= to_string(unsigned(date.month())) ;
+    temp+= padNum(to_string(unsigned(date.month())) ,2);
     temp+= '/' ;
     temp+= to_string(int(date.year())) ;
     temp+=',' ;

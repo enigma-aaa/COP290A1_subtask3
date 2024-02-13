@@ -22,7 +22,7 @@ class Basic{
         int noShares;
         double curBal;
         int curLoc;
-
+        int globStartLoc;
     Basic(int n,int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName);
     /*first price opver here is not the price at the start 
         date but price n days before the start date*/

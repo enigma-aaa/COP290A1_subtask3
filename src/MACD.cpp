@@ -1,4 +1,5 @@
 #include "MACD.h"
+#include "CommonCons.h"
 MACDStrat::MACDStrat(int x,chrono::year_month_day startDate,chrono::year_month_day endDate,string symbolName)
 :x(x),startDate(startDate),endDate(endDate),symbolName(symbolName){
     noShares = 0;
@@ -53,24 +54,18 @@ void MACDStrat::writeCashFlow(chrono::year_month_day curDate){
 }
 void MACDStrat::writeCSVfiles()
 {
-    string baseFilePath = "./bin/stockCSV/";
-    string csv_cashflow = baseFilePath + "cashflow.csv";
-    string csv_order_stats = baseFilePath + "order_stats.csv";
+    string baseFilePath = BASE_FILE_PATH;
+    string csv_cashflow = baseFilePath + CASHFLOW;
+    string csv_order_stats = baseFilePath + ORDER_STATS;
     flow.writeToCsv(csv_cashflow);
     stats.writeToCsv(csv_order_stats);        
-}
-void MACDStrat::writeDebugFiles()
-{
-    string baseFilePath = "./bin/stockCSV/";
-    string debugFile = baseFilePath + "Signal.csv";
-    dateFloat.writeToCsv(debugFile);
 }
 void MACDStrat::writeFinalPNL(){
     stringstream stream;
     stream << std::fixed << std::setprecision(2) << curBal;
     string curBalStr = stream.str();
-    string baseFilePath = "./bin/stockCSV/";
-    string pnlFileName = "finalPNL.txt";
+    string baseFilePath = BASE_FILE_PATH;
+    string pnlFileName = FINAL_PNL;
     string pnlFilePath = baseFilePath + pnlFileName;
     ofstream pnlFile(pnlFilePath);
     pnlFile << curBalStr;
@@ -81,7 +76,6 @@ void MACDStrat::main(){
     multiMain(&curTable);
     squareOff();
     writeCSVfiles();
-    writeDebugFiles();
     writeFinalPNL();
 }
 void MACDStrat::multiMain(PriceTable* srcTable){

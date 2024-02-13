@@ -93,15 +93,15 @@ class LinearRegression{
     void buy()
     {
         noShares++ ;
-        curBal = curBal - curPrice ;
-        stats.addRow(table.rows[curLoc].date , "BUY" , noShares , curPrice) ;
+        curBal = curBal -  curPrice ;
+        stats.addRow(table.rows[curLoc].date , "BUY" , 1 , curPrice) ;
         flow.addRow(table.rows[curLoc].date, curBal) ;
     }
     void sell()
     {
         noShares-- ;
         curBal = curBal + curPrice ;
-        stats.addRow(table.rows[curLoc].date , "SELL" , noShares , curPrice) ;
+        stats.addRow(table.rows[curLoc].date , "SELL" , -1 , curPrice) ;
         flow.addRow(table.rows[curLoc].date, curBal) ;
     }
 

@@ -12,13 +12,13 @@ void RSI::buy()
 {
     noShares++ ;
     curBal = curBal - curPrice ;
-    stats.addRow(curDate,"BUY",noShares,curPrice) ;
+    stats.addRow(curDate,"BUY",1,curPrice) ;
 }
 void RSI::sell()
 {
     noShares-- ;
     curBal = curBal + curPrice ;
-    stats.addRow(curDate,"SELL" ,noShares , curPrice) ;
+    stats.addRow(curDate,"SELL" ,1 , curPrice) ;
 }    
 void RSI::writeCashFlow(){
     flow.addRow(curDate,curBal);

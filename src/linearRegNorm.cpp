@@ -101,6 +101,17 @@ vector<vector<double>> LinearRegression::matrixmult(vector<vector<double>> &a, v
     return ans;
 }
 
+void printMatrix(vector<vector<double>>& matrix){
+    ofstream file("./tempMatrix.txt");
+    for(int i=0;i<matrix.size();i++){
+        for(int j=0;j<matrix[i].size();j++){
+            file << matrix[i][j];
+        }
+        file << endl;
+    }
+    file.close();
+}
+
 void LinearRegression::fit()
 {
     chrono::year_month_day modified_train_start_date = subtractDate(train_start_date , 10) ;
@@ -169,7 +180,6 @@ void LinearRegression::fit()
 
     vector<vector<double>> ans = matrixmult(tempAns, Y);
 
-
     
     for (int i = 0; i < coefficients.size(); i++)
     {
@@ -197,13 +207,13 @@ void LinearRegression::buy()
 {
     noShares++;
     curBal = curBal - curPrice;
-    stats.addRow(table->rows[curLoc].date, "BUY", noShares, curPrice);
+    stats.addRow(table->rows[curLoc].date, "BUY", 1, curPrice);
 }
 void LinearRegression::sell()
 {
     noShares--;
     curBal = curBal + curPrice;
-    stats.addRow(table->rows[curLoc].date, "SELL", noShares, curPrice);
+    stats.addRow(table->rows[curLoc].date, "SELL", 1, curPrice);
 }
 
 void LinearRegression::check()
