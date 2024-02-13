@@ -105,7 +105,6 @@ void Basic::multiMain(PriceTable* srcTable){
             break;
         }
     }
-    if(startDateLoc == -1) { cout << "start date not located in the table for some reason" << endl;}
     //cout << "startDateLoc is:" << startDateLoc << endl;
     globStartLoc = startDateLoc;
     int startDate_n_Loc = startDateLoc - n;
