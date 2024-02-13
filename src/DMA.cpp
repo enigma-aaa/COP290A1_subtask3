@@ -102,10 +102,6 @@ void DMA::multiMain(PriceTable* srcTable)
             break;
         }
     }
-    if (startDateLoc == -1)
-    {
-        cout << "start date not located in the table for some reason" << endl;
-    }
     /*Have to ask sir since current day has to be included might have to do n-1 here*/
     int startDate_n_Loc = startDateLoc - n;
     curSum = 0 ;
