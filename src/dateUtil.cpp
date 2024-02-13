@@ -10,7 +10,7 @@ PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chr
     startMonth = unsigned(startDate.month());
     startDay = unsigned(startDate.day());
     
-    cout << "startYear:" << startYear << " " << "startMonth:" << startMonth << " startDay:" << startDay << endl;
+    //cout << "startYear:" << startYear << " " << "startMonth:" << startMonth << " startDay:" << startDay << endl;
 
     int endYear,endMonth,endDay;
     endYear = int(endDate.year());
@@ -18,7 +18,7 @@ PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chr
     endDay = unsigned(endDate.day());
     string filePath = CSV_FILE_PATH + symbolName + ".csv";
     
-    cout << "endYear:" << endYear << " " << "endMonth:" << endMonth << " endDay:" << endDay << endl;
+    //cout << "endYear:" << endYear << " " << "endMonth:" << endMonth << " endDay:" << endDay << endl;
     command += to_string(startYear) + " " + to_string(startMonth) + " " + to_string(startDay) + " ";
     command += to_string(endYear) + " " + to_string(endMonth) + " " + to_string(endDay) + " ";
     command += filePath + " ";
@@ -31,7 +31,7 @@ PriceTable getPriceTable(string& symbolName,chrono::year_month_day startDate,chr
     /*for(PriceTableRow& row:table.rows){
         cout << row.getString() << endl;
     } */ 
-    cout << "Number of rows in table:" << table.rows.size() << endl;
+    //cout << "Number of rows in table:" << table.rows.size() << endl;
     return table;  
 }
 /* a-b */
