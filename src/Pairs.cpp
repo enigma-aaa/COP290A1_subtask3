@@ -61,16 +61,7 @@ void Pairs::check(){
     }
 }
 void Pairs::squareOff(){
-    if(noShares > 0){
-        curBal = curBal + noShares*(curPrice1-curPrice2);
-        stats1.addRow(table1->rows.back().date,"SELL",noShares,curPrice1);
-        stats2.addRow(table2->rows.back().date,"BUY",noShares,curPrice2);            
-    }   
-    if(noShares < 0){
-        curBal = curBal + noShares*(curPrice1-curPrice2);
-        stats1.addRow(table1->rows.back().date,"BUY",-noShares,curPrice1);
-        stats2.addRow(table2->rows.back().date,"SELL",-noShares,curPrice2);
-    }     
+    curBal = curBal + noShares*(curPrice1-curPrice2);   
 }
 void Pairs::writeCSVfiles()
 {
